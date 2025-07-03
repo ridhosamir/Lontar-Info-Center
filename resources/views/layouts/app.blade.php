@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLN Indonesia Power</title>
+    
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Reset dan Global */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Container untuk topbar dan bendera */
+        .top-container {
+            position: relative;
+            width: 94%;
+            height: 15px;
+            background-color: #13097C;
+        }
+        
+        /* Flag container - diposisikan lebih jauh dari topbar */
+        .flag-container {
+            position: absolute;
+            top: 0;
+            right: -50px;
+            height: 15px;
+            display: flex;
+            gap: 10px; 
+        }
+        
+        .flag-yellow {
+            width: 15px;
+            height: 25px; 
+            background-color: #ffff0c;
+        }
+        
+        .flag-red {
+            width: 15px;
+            height: 32px; 
+            background-color: #e53935;
+        }
+        
+        /* Header Utama */
+        .header {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 2px solid #d0d0d0; 
+        }
+        
+        /* Logo dan Teks Container */
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+                
+        /* Logo Image */
+        .logo-img {
+            height: 35px; 
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        /* Login Admin */
+        .login-btn {
+            font-size: 22px;
+            font-weight: bold;
+            color: #000000;
+            text-decoration: none;
+            font-family: 'Jura', 'Helvetica', sans-serif;
+        }
+        
+        /* Modal Styles - Updated to match the image */
+        .modal-dialog {
+            max-width: 800px;
+            margin: 1.75rem auto;
+        }
+        
+        .modal-content {
+            border-radius: 20px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-body {
+            padding: 0;
+        }
+        
+        .login-container {
+            display: flex;
+            height: 550px;
+        }
+        
+        .login-image {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .login-form {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .login-logo img {
+            height: 45px; 
+            width: auto; 
+        }
+        
+        .login-title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Jura', sans-serif;
+        }
+        
+        .form-control {
+            height: 50px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .login-submit {
+            height: 50px;
+            width: 100%;
+            border-radius: 10px;
+            background-color: #13097C;
+            color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Jura', sans-serif;
+            cursor: pointer;
+        }
+        
+        .component-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 20px;
+            font-family: 'Jura', sans-serif;
+            display: flex;
+            align-items: center;
+        }
+        
+        .component-icon {
+            color: #b19aff;
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        /* Banner LONTAR INFORMATION CENTER */
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .banner-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .banner-title {
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Jura', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Security Warning Modal */
+        .security-modal .modal-dialog {
+            max-width: 700px;
+        }
+        
+        .security-modal .modal-content {
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .security-warning {
+            font-family: 'Jura', sans-serif;
+            font-size: 24px;
+            text-align: center;
+            margin: 30px 20px;
+            line-height: 1.5;
+        }
+        
+        .security-close-btn {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 24px;
+            font-family: 'Jura', sans-serif;
+            font-weight: bold;
+            display: block;
+            width: 60%;
+            margin: 20px auto 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .security-close-btn:hover {
+            background-color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container untuk topbar dan bendera -->
+    <div class="top-container">
+        <!-- Bendera di atas topbar -->
+        <div class="flag-container">
+            <div class="flag-blue"></div>
+            <div class="flag-yellow"></div>
+            <div class="flag-red"></div>
+        </div>
+    </div>
+    
+    <!-- Header utama -->
+    <div class="header">
+        <div class="logo-container">
+            <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo" class="logo-img">
+        </div>
+        
+        <a href="#" class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login Admin</a>
+    </div>
+    
+    <!-- LONTAR INFORMATION CENTER Banner -->
+    <div class="banner-container">
+        <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="Power Plant" class="banner-image">
+        <div class="banner-overlay">
+            <h1 class="banner-title">LONTAR INFORMATION<br>CENTER</h1>
+        </div>
+    </div>
+    
+    <!-- Content -->
+    <main>
+        @yield('content')
+    </main>
+    
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="login-container">
+                        <!-- Left side - Image with Component label -->
+                        <div class="login-image" style="background-image: url('{{asset('storage/images/bg-login.jpeg') }}')">
+                            <div class="component-label">
+                                <span class="component-icon"></span> 
+                            </div>
+                        </div>
+                        
+                        <!-- Right side - Login form -->
+                        <div class="login-form">
+                            <!-- Logo and title -->
+                            <div class="login-logo">
+                                <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo">
+                                <div>
+                                    <br>
+                                </div>
+                            </div>
+                            
+                            <h3 class="login-title">Login Admin</h3>
+                            
+                            <!-- Login form -->
+                            <form method="POST" action="{{ route('login') }}" style="width: 100%;">
+                                @csrf
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                <button type="submit" class="login-submit">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Security Warning Modal - Will show automatically when page loads -->
+    <div class="modal fade security-modal" id="securityModal" tabindex="-1" aria-labelledby="securityModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="security-warning">
+                        Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.
+                    </div>
+                    <button type="button" class="security-close-btn" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script to show security modal automatically on EVERY page load -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selalu tampilkan modal setiap kali halaman dimuat
+            var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
+            securityModal.show();
+        });
+    </script>
+</body>
+</html>
