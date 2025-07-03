@@ -11,7 +11,33 @@
             <div class="col-md-5">
                 <div class="company-image-wrapper">
                     <div class="company-image-border">
-                        <img src="{{ asset('storage/images/bg-login.jpeg') }}" alt="PLN Indonesia Power Plant" class="company-image">
+                        <!-- Carousel untuk berganti gambar -->
+                        <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <!-- Indicators/dots -->
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
+                                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
+            
+                            </div>
+                            
+                            <!-- The slideshow/carousel -->
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{{ asset('storage/images/bg-login.jpeg') }}" alt="PLN Indonesia Power Plant 1" class="company-image">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="PLN Indonesia Power Plant 2" class="company-image">
+                                </div>
+                            </div>
+                            
+                            <!-- Left and right controls/icons -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,24 +71,66 @@
     .company-image-wrapper {
         position: relative;
         padding: 15px;
-        background-color: #0a0a5d; /* Biru tua seperti pada gambar */
+        background-color: #0a0a5d;
         border-radius: 30px;
-        height: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .company-image-border {
         position: relative;
         overflow: hidden;
-        border: 3px solid #f8da29; /* Border kuning */
+        border: 3px solid #f8da29;
         border-radius: 20px;
-        height: 100%;
+        width: 100%;
     }
     
     .company-image {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: auto;
         display: block;
+    }
+    
+    /* Styling untuk carousel */
+    .carousel {
+        width: 100%;
+    }
+    
+    .carousel-inner {
+        width: 100%;
+    }
+    
+    .carousel-item {
+        width: 100%;
+    }
+    
+    /* Membuat indikator carousel lebih terlihat */
+    .carousel-indicators {
+        bottom: 0;
+    }
+    
+    .carousel-indicators button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        margin: 0 4px;
+    }
+    
+    .carousel-indicators button.active {
+        background-color: #f8da29;
+    }
+    
+    /* Styling untuk tombol next/prev */
+    .carousel-control-prev, .carousel-control-next {
+        width: 10%;
+        opacity: 0.7;
+    }
+    
+    .carousel-control-prev:hover, .carousel-control-next:hover {
+        opacity: 1;
     }
     
     .company-description {
@@ -84,7 +152,7 @@
         border-top-right-radius: 15px; 
         border-top-left-radius: 15px; 
         margin-left:17px;
-        background-color: #0a0a5d; /* Biru tua seperti pada gambar */
+        background-color: #0a0a5d; 
         padding: 15px 0;
         margin-top: 40px;
         width: 98%;
@@ -97,5 +165,59 @@
         font-size: 18px;
         font-family: 'Jura', sans-serif;
     }
+    
+    /* Media query untuk layar kecil */
+    @media (max-width: 767.98px) {
+        .company-image-wrapper {
+            margin-bottom: 20px;
+        }
+    }
 </style>
+
+@push('scripts')
+<script>
+    $(document).ready(function(){
+        // Initialize the carousel with settings
+        $('#bannerCarousel').carousel({
+            interval: 3000,  
+            wrap: true,      
+            keyboard: false  
+        });
+        
+        // Function to adjust frame height based on image dimensions
+        function adjustFrameHeight() {
+            // Get active carousel item image
+            const activeImage = $('.carousel-item.active img');
+            if (activeImage.length) {
+                // When image is loaded, set wrapper height
+                activeImage.on('load', function() {
+                    const imageHeight = $(this).height();
+                    const imageWidth = $(this).width();
+                    const aspectRatio = imageWidth / imageHeight;
+                    
+                    // Adjust container sizing if needed
+                    if (aspectRatio > 1.5) { // For very wide images
+                        $('.company-image-border').css('max-height', '400px');
+                    } else {
+                        $('.company-image-border').css('max-height', 'none');
+                    }
+                });
+            }
+        }
+        
+        // Call on page load
+        adjustFrameHeight();
+        
+        // Call when carousel slides
+        $('#bannerCarousel').on('slid.bs.carousel', function() {
+            adjustFrameHeight();
+        });
+        
+        // Call on window resize
+        $(window).resize(function() {
+            adjustFrameHeight();
+        });
+    });
+</script>
+@endpush
 @endsection
