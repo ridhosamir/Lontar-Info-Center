@@ -1,0 +1,125 @@
+
+.header {
+    background-color: #1a237e;
+    color: white;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.logo-container img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-name {
+    color: #42a5f5;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.logo-tagline {
+    color: #90caf9;
+    font-size: 16px;
+}
+
+.login-btn {
+    margin-right: 20px;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    text-decoration: none;
+}
+
+.login-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Login Modal Styles */
+.modal-dialog {
+    max-width: 800px;
+}
+
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+}
+
+.modal-body {
+    padding: 0;
+}
+
+.login-container {
+    display: flex;
+    height: 500px;
+}
+
+.login-image {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+}
+
+.login-form {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.login-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-control {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.login-submit {
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Indonesian Flag in header */
+.flag {
+    height: 20px;
+    margin-right: 20px;
+}
