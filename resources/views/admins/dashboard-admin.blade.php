@@ -395,6 +395,10 @@
             z-index: 999;
         }
 
+        .sidebar-logo-container {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -403,11 +407,25 @@
                 left: 0;
                 height: calc(100vh);
                 z-index: 1000;
-                padding-top: 30px
+                padding-top: 0;
             }
 
             .sidebar.active {
                 transform: translateX(0);
+            }
+
+            .sidebar-logo-container {
+                display: block;
+                padding: 20px;
+                text-align: center;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .sidebar-logo-container .logo-img {
+                height: 40px;
+                width: auto;
+                display: block;
+                margin: 0 auto;
             }
 
             .sidebar-overlay.active {
@@ -487,6 +505,10 @@
 
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
+            <div class="sidebar-logo-container">
+                <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo" class="logo-img">
+            </div>
+            <br>
             <ul class="sidebar-menu">
                 <li class="sidebar-item active">
                     <a href="{{ route('admins.dashboard') }}" class="sidebar-link">
