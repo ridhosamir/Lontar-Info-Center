@@ -727,7 +727,6 @@
         <div class="main-content">
             <h1 class="dashboard-title text-center">Manage Poster</h1>
 
-            <!-- CHANGE 2: Button layout updated -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <button class="btn-create" data-bs-toggle="modal" data-bs-target="#createModal">
@@ -831,7 +830,6 @@
         </div>
     </div>
 
-    <!-- This form is now hidden and submitted via JS -->
     <form id="deleteForm" action="{{ route('admins.poster.destroyMultiple') }}" method="POST" class="d-none">
         @csrf
         @method('DELETE')
@@ -844,8 +842,7 @@
         <div class="popup-message" id="success-message"></div>
     </div>
 
-    <!-- CHANGE 1 & 3: New Popups Added -->
-    <!-- Alert Popup (for validation) -->
+    <!-- Alert Popup -->
     <div class="popup" id="alert-popup">
         <i class="fas fa-exclamation-circle popup-icon alert"></i>
         <div class="popup-message" id="alert-message"></div>
@@ -888,9 +885,6 @@
                 overlay.classList.remove('active');
             });
 
-            // =================================================================
-            // CREATE MODAL LOGIC (BUG FIXES APPLIED)
-            // =================================================================
             const createFileInput = document.getElementById('create-gambar');
             const previewContainer = document.getElementById('image-preview-container');
             const deleteSelectedBtn = document.getElementById('delete-selected-preview');
@@ -959,9 +953,6 @@
                 createFileInput.files = dataTransfer.files;
             }
 
-            // =================================================================
-            // MAIN PAGE POSTER CLICK (VIEW POSTER)
-            // =================================================================
             document.querySelectorAll('.poster-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const imageUrl = this.dataset.imageUrl;
@@ -970,9 +961,6 @@
                 });
             });
 
-            // =================================================================
-            // DELETE MODAL LOGIC (NEW IMPLEMENTATION)
-            // =================================================================
             const openDeleteModalBtn = document.getElementById('open-delete-modal-btn');
             const deletePosterGrid = document.getElementById('delete-poster-grid');
             const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
@@ -1032,22 +1020,18 @@
                     }
                 });
 
-                // Ubah teks tombol berdasarkan status
                 selectAllDeleteBtn.textContent = areAllSelected ? 'Select All' : 'Deselect All';
             });
 
-            // CHANGE 3: Add validation check
             confirmDeleteBtn.addEventListener('click', () => {
                 if (selectedForDelete.size === 0) {
                     showAlertPopup('You must select at least one poster to delete!');
                     return;
                 }
-                // CHANGE 1: Show confirmation popup instead of submitting
                 showPopup('delete-confirm-popup');
             });
 
             finalDeleteBtn.addEventListener('click', () => {
-                // Populate hidden inputs right before submission
                 deleteIdsContainer.innerHTML = '';
                 selectedForDelete.forEach(id => {
                     const input = document.createElement('input');
@@ -1056,7 +1040,6 @@
                     input.value = id;
                     deleteIdsContainer.appendChild(input);
                 });
-                // Submit the form
                 deleteForm.submit();
             });
 
@@ -1065,9 +1048,6 @@
                 deletePosterGrid.innerHTML = '';
             });
 
-            // =================================================================
-            // POPUP LOGIC
-            // =================================================================
             window.showPopup = function(popupId) {
                 document.getElementById(popupId).classList.add('show');
                 popupOverlay.classList.add('show');
