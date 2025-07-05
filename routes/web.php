@@ -6,6 +6,7 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\PortalAdminController;
 use App\Http\Controllers\PortalUtamaController;
 use App\Http\Controllers\PosterController;
+use App\Http\Controllers\DashboardAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin Routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admins.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admins.dashboard-admin');
-    })->name('dashboard');
+    // Route Dashboard Admin
+    Route::get('/dashboard', [DashboardAdminController::class, 'showDashboard'])->name('dashboard-admin');
 
     // Route Portal Admin
     Route::resource('portal-admin', PortalAdminController::class)->names([

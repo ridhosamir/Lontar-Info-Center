@@ -692,7 +692,7 @@
             </div>
             <ul class="sidebar-menu">
                 <li class="sidebar-item">
-                    <a href="{{ route('admins.dashboard') }}" class="sidebar-link">
+                    <a href="{{ route('admins.dashboard-admin') }}" class="sidebar-link">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -1078,6 +1078,16 @@
                 showSuccessPopup("{{ session('success') }}");
             @endif
 
+            if (window.location.hash) {
+                var modalId = window.location.hash;
+
+                var targetModal = document.querySelector(modalId);
+
+                if (targetModal) {
+                    var modal = new bootstrap.Modal(targetModal);
+                    modal.show();
+                }
+            }
         });
     </script>
 </body>
