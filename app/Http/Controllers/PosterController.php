@@ -4,33 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Models\Poster;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PosterController extends Controller
 {
     public function index()
     {
-        $posters = Poster::all();
-        return view('admin.poster.index', compact('posters'));
+        $posters = Poster::latest()->paginate(8);
+        return view('admins.manage-poster', compact('posters'));
+    }
+
+    public function getAllPosters()
+    {
+        $posters = Poster::latest()->get();
+        return response()->json($posters);
     }
 
     public function create()
     {
-        return view('admin.poster.create');
+        return view('admins.manage-poster');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'required|array',
+            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $image = $request->file('gambar');
-        $imageName = time().'.'.$image->extension();
-        $image->move(public_path('images/posters'), $imageName);
+        if ($request->hasFile('gambar')) {
+            foreach ($request->file('gambar') as $image) {
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('images/posters'), $imageName);
+                Poster::create(['gambar' => $imageName]);
+            }
+        }
 
-        Poster::create(['gambar' => $imageName]);
-
-        return redirect()->route('poster.index')->with('success', 'Poster created successfully.');
+        return redirect()->route('admins.manage-poster')->with('success', 'Poster(s) created successfully.');
     }
 
     public function show(Poster $poster)
@@ -49,28 +59,51 @@ class PosterController extends Controller
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // Hapus gambar lama
-        if ($poster->gambar && file_exists(public_path('images/posters/'.$poster->gambar))) {
-            unlink(public_path('images/posters/'.$poster->gambar));
+        $imagePath = public_path('images/posters/' . $poster->gambar);
+        if (File::exists($imagePath)) {
+            File::delete($imagePath);
         }
 
         $image = $request->file('gambar');
-        $imageName = time().'.'.$image->extension();
+        $imageName = time() . '.' . $image->extension();
         $image->move(public_path('images/posters'), $imageName);
 
         $poster->update(['gambar' => $imageName]);
 
-        return redirect()->route('poster.index')->with('success', 'Poster updated successfully.');
+        return redirect()->route('admins.manage-poster')->with('success', 'Poster updated successfully.');
     }
 
     public function destroy(Poster $poster)
     {
-        if ($poster->gambar && file_exists(public_path('images/posters/'.$poster->gambar))) {
-            unlink(public_path('images/posters/'.$poster->gambar));
+        $imagePath = public_path('images/posters/' . $poster->gambar);
+        if (File::exists($imagePath)) {
+            File::delete($imagePath);
         }
 
         $poster->delete();
 
-        return redirect()->route('poster.index')->with('success', 'Poster deleted successfully.');
+        return redirect()->route('admins.manage-poster')->with('success', 'Poster deleted successfully.');
+    }
+
+    public function destroyMultiple(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:posters,id_poster'
+        ]);
+
+        $ids = $request->input('ids');
+        $posters = Poster::whereIn('id_poster', $ids)->get();
+
+        foreach ($posters as $poster) {
+            $imagePath = public_path('images/posters/' . $poster->gambar);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+
+        Poster::whereIn('id_poster', $ids)->delete();
+
+        return redirect()->route('admins.manage-poster')->with('success', 'Selected posters deleted successfully.');
     }
 }

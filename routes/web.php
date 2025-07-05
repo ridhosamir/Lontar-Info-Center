@@ -23,40 +23,41 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin Routes
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
+Route::middleware(['auth:admin'])->prefix('admin')->name('admins.')->group(function () {
+    Route::get('/dashboard', function () {
         return view('admins.dashboard-admin');
-    })->name('admins.dashboard');
-
-    Route::get('/admin/manage-poster', function () {
-        return view('admins.manage-poster');
-    })->name('admins.manage-poster');
+    })->name('dashboard');
 
     // Route Portal Admin
     Route::resource('portal-admin', PortalAdminController::class)->names([
-        'index' => 'admins.portal-admin',
-        'create' => 'admins.portal-admin.create',
-        'store' => 'admins.portal-admin.store',
-        'show' => 'admins.portal-admin.show',
-        'edit' => 'admins.portal-admin.edit',
-        'update' => 'admins.portal-admin.update',
-        'destroy' => 'admins.portal-admin.destroy'
+        'index' => 'portal-admin',
+        'create' => 'portal-admin.create',
+        'store' => 'portal-admin.store',
+        'show' => 'portal-admin.show',
+        'edit' => 'portal-admin.edit',
+        'update' => 'portal-admin.update',
+        'destroy' => 'portal-admin.destroy'
     ]);
 
     // Route Portal Utama
     Route::resource('portal-utama', PortalUtamaController::class)->names([
-        'index' => 'admins.portal-utama',
-        'create' => 'admins.portal-utama.create',
-        'store' => 'admins.portal-utama.store',
-        'show' => 'admins.portal-utama.show',
-        'edit' => 'admins.portal-utama.edit',
-        'update' => 'admins.portal-utama.update',
-        'destroy' => 'admins.portal-utama.destroy'
+        'index' => 'portal-utama',
+        'create' => 'portal-utama.create',
+        'store' => 'portal-utama.store',
+        'show' => 'portal-utama.show',
+        'edit' => 'portal-utama.edit',
+        'update' => 'portal-utama.update',
+        'destroy' => 'portal-utama.destroy'
     ]);
 
     // Route Manage Reminder
-    Route::get('/admin/manage-reminder', [ReminderController::class, 'index'])->name('admins.manage-reminder');
-    Route::put('/admin/reminder/{reminder}', [ReminderController::class, 'update'])->name('admins.reminder.update');
+    Route::get('/manage-reminder', [ReminderController::class, 'index'])->name('manage-reminder');
+    Route::put('/reminder/{reminder}', [ReminderController::class, 'update'])->name('reminder.update');
 
-    Route::resource('poster', PosterController::class);
+    // Route Manage Poster
+    Route::get('/manage-poster', [PosterController::class, 'index'])->name('manage-poster');
+    Route::post('/manage-poster', [PosterController::class, 'store'])->name('manage-poster.store');
+    Route::get('/posters/all', [PosterController::class, 'getAllPosters'])->name('posters.all');
+    Route::delete('/poster/delete-multiple', [PosterController::class, 'destroyMultiple'])->name('poster.destroyMultiple');
+    Route::resource('poster', PosterController::class)->except(['index', 'store']);
 });
