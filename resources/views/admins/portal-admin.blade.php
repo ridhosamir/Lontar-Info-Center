@@ -19,6 +19,29 @@
             font-family: 'Jura', sans-serif;
         }
 
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        body:hover::-webkit-scrollbar-thumb,
+        .main-content:hover::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+        }
+
+        body::-webkit-scrollbar-thumb:active,
+        .main-content::-webkit-scrollbar-thumb:active {
+            background: #a8a8a8;
+        }
+
         .top-container {
             position: relative;
             width: 94%;
