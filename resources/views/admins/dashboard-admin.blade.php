@@ -23,6 +23,29 @@
             font-family: 'Jura', sans-serif;
         }
 
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        body:hover::-webkit-scrollbar-thumb,
+        .main-content:hover::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+        }
+
+        body::-webkit-scrollbar-thumb:active,
+        .main-content::-webkit-scrollbar-thumb:active {
+            background: #a8a8a8;
+        }
+
         .top-container {
             position: relative;
             width: 94%;
@@ -155,6 +178,18 @@
             font-weight: bold;
         }
 
+        .page-item.active .page-link {
+            background-color: #13097C;
+            color: #fff;
+            border-color: #13097C;
+        }
+
+        .page-link {
+            color: #13097C;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+        }
+
         .main-content {
             flex: 1;
             padding: 20px;
@@ -163,8 +198,8 @@
         }
 
         .dashboard-title {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 20px;
             color: #13097C;
         }
@@ -288,11 +323,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-size: 24px;
             margin: 0 auto 15px;
+        }
+
+        .quick-action-icon.icon-reminder {
+            background-color: rgba(229, 57, 53, 0.2);
+            color: #e53935;
+        }
+
+        .quick-action-icon.icon-portal-admin {
             background-color: rgba(19, 9, 124, 0.2);
             color: #13097C;
+        }
+
+        .quick-action-icon.icon-portal-utama {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+
+        .quick-action-icon.icon-poster {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
         }
 
         .quick-action-title {
@@ -420,6 +472,17 @@
             display: none;
         }
 
+        .btn-custom-primary {
+            background-color: #13097C;
+            border-color: #13097C;
+            color: #fff;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: #0f0766;
+            color: #fff;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -538,10 +601,9 @@
             <div class="sidebar-logo-container">
                 <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo" class="logo-img">
             </div>
-            <br>
             <ul class="sidebar-menu">
                 <li class="sidebar-item active">
-                    <a href="{{ route('admins.dashboard') }}" class="sidebar-link">
+                    <a href="{{ route('admins.dashboard-admin') }}" class="sidebar-link">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -614,29 +676,32 @@
                 <div class="card-header">Quick Actions</div>
                 <div class="card-body">
                     <div class="quick-actions-container">
-                        <a href="#" class="quick-action-card">
-                            <div class="quick-action-icon">
+                        <a href="{{ route('admins.manage-reminder') }}#editModal" class="quick-action-card">
+                            <div class="quick-action-icon icon-reminder">
                                 <i class="fas fa-bell"></i>
                             </div>
                             <div class="quick-action-title">Manage Reminder</div>
                             <div class="quick-action-label">Set or edit reminders</div>
                         </a>
-                        <a href="#" class="quick-action-card">
-                            <div class="quick-action-icon">
+
+                        <a href="{{ route('admins.portal-admin') }}#createModal" class="quick-action-card">
+                            <div class="quick-action-icon icon-portal-admin">
                                 <i class="fas fa-users"></i>
                             </div>
                             <div class="quick-action-title">Portal Admin</div>
                             <div class="quick-action-label">Manage admin portals</div>
                         </a>
-                        <a href="#" class="quick-action-card">
-                            <div class="quick-action-icon">
+
+                        <a href="{{ route('admins.portal-utama') }}#createModal" class="quick-action-card">
+                            <div class="quick-action-icon icon-portal-utama">
                                 <i class="fas fa-users"></i>
                             </div>
                             <div class="quick-action-title">Portal Utama</div>
                             <div class="quick-action-label">Manage main portals</div>
                         </a>
-                        <a href="#" class="quick-action-card">
-                            <div class="quick-action-icon">
+
+                        <a href="{{ route('admins.manage-poster') }}#createModal" class="quick-action-card">
+                            <div class="quick-action-icon icon-poster">
                                 <i class="fas fa-image"></i>
                             </div>
                             <div class="quick-action-title">Poster</div>
@@ -648,15 +713,20 @@
 
             <!-- Portal Admin List -->
             <div class="card">
-                <div class="card-header">Portal Admin List</div>
-
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Portal Admin List</span>
+                    <form action="{{ route('admins.dashboard-admin') }}" method="GET" class="d-flex gap-2"
+                        style="max-width: 400px;">
+                        <input type="text" name="search" class="form-control" placeholder="Cari portal..."
+                            value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-custom-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
                 <div class="card-body">
-                    <div class="search-container">
-                        <input type="text" id="search-input" class="search-input"
-                            placeholder="Search by name, description, or link...">
-                    </div>
-                    <div class="portal-list-container">
-                        @foreach (App\Models\PortalAdmin::all() as $portal)
+                    <div class="portal-list-container" id="portal-list">
+                        @foreach ($portalAdmins as $portal)
                             <div class="portal-card" data-id="{{ $portal->id_portal_admin }}"
                                 data-nama="{{ $portal->nama_portal_admin }}"
                                 data-keterangan="{{ $portal->keterangan_admin }}" data-link="{{ $portal->link }}">
@@ -666,6 +736,9 @@
                                 </div>
                             </div>
                         @endforeach
+                    </div>
+                    <div class="pagination-container mt-3">
+                        {{ $portalAdmins->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>
