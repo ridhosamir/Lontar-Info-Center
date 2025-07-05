@@ -115,7 +115,7 @@
         }
 
         .sidebar {
-            width: 250px;
+            width: 275px;
             background-color: #f8f9fa;
             border-right: 1px solid #dee2e6;
             padding: 20px 0;
@@ -332,13 +332,15 @@
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             height: 200px;
-            /* Fixed height for symmetrical squares */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            justify-content: center;
+            align-items: center;
             background: linear-gradient(135deg, #e6e9ff, #fff);
             transition: transform 0.2s;
             border: 1px solid #e0e0e0;
+            cursor: pointer;
         }
 
         .portal-card:hover {
@@ -347,11 +349,11 @@
         }
 
         .portal-name {
-            font-size: 16px;
+            font-size: 25px;
+            text-align: center;
             font-weight: bold;
             color: #13097C;
             margin-bottom: 10px;
-            /* Text truncation for long names */
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -362,7 +364,8 @@
 
         .portal-description {
             color: #6c757d;
-            font-size: 13px;
+            font-size: 15px;
+            text-align: center;
             margin-bottom: 15px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -370,7 +373,25 @@
             -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
             line-height: 1.4;
-            flex-grow: 1;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
         .hamburger-menu {
@@ -464,6 +485,15 @@
 
             .portal-card {
                 height: 160px;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-input,
+            .btn-create {
+                width: 100%;
             }
         }
     </style>
@@ -619,15 +649,20 @@
             <!-- Portal Admin List -->
             <div class="card">
                 <div class="card-header">Portal Admin List</div>
+
                 <div class="card-body">
+                    <div class="search-container">
+                        <input type="text" id="search-input" class="search-input"
+                            placeholder="Search by name, description, or link...">
+                    </div>
                     <div class="portal-list-container">
                         @foreach (App\Models\PortalAdmin::all() as $portal)
-                            <div class="portal-card">
-                                <div class="portal-name">
-                                    {{ $portal->nama_portal_admin }}
-                                </div>
-                                <div class="portal-description">
-                                    {{ $portal->keterangan_admin }}
+                            <div class="portal-card" data-id="{{ $portal->id_portal_admin }}"
+                                data-nama="{{ $portal->nama_portal_admin }}"
+                                data-keterangan="{{ $portal->keterangan_admin }}" data-link="{{ $portal->link }}">
+                                <div class="portal-content">
+                                    <div class="portal-name">{{ $portal->nama_portal_admin }}</div>
+                                    <div class="portal-description">{{ $portal->keterangan_admin }}</div>
                                 </div>
                             </div>
                         @endforeach
@@ -645,6 +680,8 @@
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
+            const searchInput = document.getElementById('search-input');
+            const portalListContainer = document.querySelector('.portal-list-container');
 
             // Toggle sidebar when hamburger button is clicked
             hamburgerBtn.addEventListener('click', function() {
@@ -675,6 +712,59 @@
                     overlay.classList.remove('active');
                 }
             });
+
+            // Search functionality
+            if (searchInput && portalListContainer) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.trim().toLowerCase();
+                    const portalCards = portalListContainer.getElementsByClassName('portal-card');
+
+                    Array.from(portalCards).forEach(card => {
+                        const nama = card.dataset.nama.toLowerCase();
+                        const keterangan = card.dataset.keterangan.toLowerCase();
+                        const link = card.dataset.link.toLowerCase();
+
+                        // Check if any field matches the search term
+                        if (nama.includes(searchTerm) || keterangan.includes(searchTerm) || link
+                            .includes(searchTerm)) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    // Optional: Show a message if no results are found
+                    const noResultsMessage = portalListContainer.querySelector('.no-results');
+                    if (Array.from(portalCards).every(card => card.style.display === 'none')) {
+                        if (!noResultsMessage) {
+                            const message = document.createElement('div');
+                            message.className = 'no-results';
+                            message.textContent = 'No results found.';
+                            message.style.textAlign = 'center';
+                            message.style.padding = '20px';
+                            message.style.color = '#6c757d';
+                            portalListContainer.appendChild(message);
+                        }
+                    } else {
+                        if (noResultsMessage) {
+                            noResultsMessage.remove();
+                        }
+                    }
+                });
+            }
+
+            // Portal card click handler
+            if (portalListContainer) {
+                portalListContainer.addEventListener('click', function(e) {
+                    const card = e.target.closest('.portal-card');
+                    if (card) {
+                        const link = card.dataset.link;
+                        if (link) {
+                            window.open(link, '_blank');
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
