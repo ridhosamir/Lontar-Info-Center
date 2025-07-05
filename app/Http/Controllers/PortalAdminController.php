@@ -4,57 +4,97 @@ namespace App\Http\Controllers;
 
 use App\Models\PortalAdmin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PortalAdminController extends Controller
 {
-    public function index()
+    public function __construct()
     {
-        $portalAdmins = PortalAdmin::all();
-        return view('admin.portal_admin.index', compact('portalAdmins'));
+        $this->middleware('auth:admin');
     }
 
-    public function create()
+    /**
+     * Display a listing of the portal admins.
+     */
+    public function index(Request $request)
     {
-        return view('admin.portal_admin.create');
+        $search = $request->input('search');
+        $query = PortalAdmin::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_portal_admin', 'like', "%{$search}%")
+                  ->orWhere('keterangan_admin', 'like', "%{$search}%")
+                  ->orWhere('link', 'like', "%{$search}%");
+            });
+        }
+
+        $portalAdmins = $query->paginate(8)->appends($request->except('page'));
+
+        return view('admins.portal-admin', compact('portalAdmins'));
     }
 
+    /**
+     * Store a newly created portal admin in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'nama_portal_admin' => 'required',
-            'keterangan_admin' => 'nullable'
+            'nama_portal_admin' => 'required|string|max:255',
+            'keterangan_admin' => 'nullable|string',
+            'link' => 'nullable|url',
         ]);
 
-        PortalAdmin::create($request->all());
+        try {
+            PortalAdmin::create([
+                'nama_portal_admin' => $request->nama_portal_admin,
+                'keterangan_admin' => $request->keterangan_admin,
+                'link' => $request->link,
+            ]);
 
-        return redirect()->route('portal-admin.index')->with('success', 'Portal Admin created successfully.');
+            return response()->json(['message' => 'Portal successfully created!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error creating portal: ' . $e->getMessage()], 500);
+        }
     }
 
-    public function show(PortalAdmin $portalAdmin)
-    {
-        return view('admin.portal_admin.show', compact('portalAdmin'));
-    }
-
-    public function edit(PortalAdmin $portalAdmin)
-    {
-        return view('admin.portal_admin.edit', compact('portalAdmin'));
-    }
-
-    public function update(Request $request, PortalAdmin $portalAdmin)
+    /**
+     * Update the specified portal admin in storage.
+     */
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_portal_admin' => 'required',
-            'keterangan_admin' => 'nullable'
+            'nama_portal_admin' => 'required|string|max:255',
+            'keterangan_admin' => 'nullable|string',
+            'link' => 'nullable|url',
         ]);
 
-        $portalAdmin->update($request->all());
+        try {
+            $portal = PortalAdmin::findOrFail($id);
+            $portal->update([
+                'nama_portal_admin' => $request->nama_portal_admin,
+                'keterangan_admin' => $request->keterangan_admin,
+                'link' => $request->link,
+            ]);
 
-        return redirect()->route('portal-admin.index')->with('success', 'Portal Admin updated successfully.');
+            return response()->json(['message' => 'Portal successfully updated!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error updating portal: ' . $e->getMessage()], 500);
+        }
     }
 
-    public function destroy(PortalAdmin $portalAdmin)
+    /**
+     * Remove the specified portal admin from storage.
+     */
+    public function destroy($id)
     {
-        $portalAdmin->delete();
-        return redirect()->route('portal-admin.index')->with('success', 'Portal Admin deleted successfully.');
+        try {
+            $portal = PortalAdmin::findOrFail($id);
+            $portal->delete();
+
+            return response()->json(['message' => 'Portal successfully deleted!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting portal: ' . $e->getMessage()], 500);
+        }
     }
 }
