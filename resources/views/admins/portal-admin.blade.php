@@ -917,27 +917,23 @@
                         popupOverlay.classList.add('show');
 
                         confirmDeleteBtn.onclick = () => {
-                            // Menggunakan AJAX untuk menghapus, bukan form submit
                             $.ajax({
                                 url: `{{ url('portal-admin') }}/${id}`,
-                                type: 'POST', // Method tetap POST karena form HTML
+                                type: 'POST',
                                 data: {
                                     '_token': '{{ csrf_token() }}',
-                                    '_method': 'DELETE' // Laravel akan mengerti ini sebagai request DELETE
+                                    '_method': 'DELETE'
                                 },
                                 success: function(response) {
-                                    // Sembunyikan semua popup
                                     editModal.hide();
                                     deleteConfirmPopup.classList.remove('show');
                                     popupOverlay.classList.remove('show');
 
-                                    // Tampilkan notifikasi sukses dan reload halaman
                                     showSuccessPopup('Portal successfully deleted!',
                                         2000, false, true);
                                 },
                                 error: function(xhr) {
                                     alert('Error deleting portal. Please try again.');
-                                    // Sembunyikan popup jika gagal
                                     deleteConfirmPopup.classList.remove('show');
                                     popupOverlay.classList.remove('show');
                                 }

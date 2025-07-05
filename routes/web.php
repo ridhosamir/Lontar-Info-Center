@@ -28,14 +28,11 @@ Route::middleware(['auth:admin'])->group(function () {
         return view('admins.dashboard-admin');
     })->name('admins.dashboard');
 
-    Route::get('/admin/manage-reminder', function () {
-        return view('admins.manage-reminder');
-    })->name('admins.manage-reminder');
-
     Route::get('/admin/manage-poster', function () {
         return view('admins.manage-poster');
     })->name('admins.manage-poster');
 
+    // Route Portal Admin
     Route::resource('portal-admin', PortalAdminController::class)->names([
         'index' => 'admins.portal-admin',
         'create' => 'admins.portal-admin.create',
@@ -46,6 +43,7 @@ Route::middleware(['auth:admin'])->group(function () {
         'destroy' => 'admins.portal-admin.destroy'
     ]);
 
+    // Route Portal Utama
     Route::resource('portal-utama', PortalUtamaController::class)->names([
         'index' => 'admins.portal-utama',
         'create' => 'admins.portal-utama.create',
@@ -56,6 +54,9 @@ Route::middleware(['auth:admin'])->group(function () {
         'destroy' => 'admins.portal-utama.destroy'
     ]);
 
-    Route::resource('reminder', ReminderController::class);
+    // Route Manage Reminder
+    Route::get('/admin/manage-reminder', [ReminderController::class, 'index'])->name('admins.manage-reminder');
+    Route::put('/admin/reminder/{reminder}', [ReminderController::class, 'update'])->name('admins.reminder.update');
+
     Route::resource('poster', PosterController::class);
 });
