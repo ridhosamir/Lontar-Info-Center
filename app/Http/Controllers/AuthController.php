@@ -11,7 +11,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admins.dashboard');
+            return redirect()->route('admins.dashboard-admin');
         }
         return view('auth.login');
     }
@@ -28,7 +28,7 @@ class AuthController extends Controller
             'password' => $credentials['password']
         ])) {
             $request->session()->regenerate();
-            return redirect()->route('admins.dashboard');
+            return redirect()->route('admins.dashboard-admin');
         }
         
         return back()->withErrors([
