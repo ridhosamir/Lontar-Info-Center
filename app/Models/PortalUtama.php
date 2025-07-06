@@ -14,6 +14,7 @@ class PortalUtama extends Model
     protected $fillable = [
         'nama_portal_user',
         'keterangan_user',
-        'link'
+        'link',
+        'click_count',
     ];
 }
