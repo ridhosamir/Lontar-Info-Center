@@ -7,7 +7,7 @@
     
     <!-- Restructured layout: Carousel on left, Portal Cards on right -->
     <div class="row mt-4">
-        <!-- Left side: Carousel - increased width from col-md-4 to col-md-5 -->
+        <!-- Left side: Carousel -->
         <div class="col-md-5">
             <div class="company-image-wrapper">
                 <div class="company-image-border">
@@ -38,9 +38,36 @@
             </div>
         </div>
         
-        <!-- Right side: Portal Cards - reduced width from col-md-8 to col-md-7 -->
+        <!-- Right side: Portal Cards -->
         <div class="col-md-7">
             <div class="portal-section">
+                <!-- Search Form - Moved to top of cards -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <form action="{{ route('welcome') }}" method="GET">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control search-input" 
+                                       placeholder="Search portals..." value="{{ request('search') }}">
+                                <button class="btn btn-primary search-btn" type="submit">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                                @if(request('search'))
+                                    <a href="{{ route('welcome') }}" class="btn btn-outline-secondary clear-btn">
+                                        <i class="fas fa-times"></i> Clear
+                                    </a>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                @if($portalItems->isEmpty() && request('search'))
+                    <div class="alert alert-info text-center">
+                        No portals found for "{{ request('search') }}". 
+                        <a href="{{ route('welcome') }}" class="alert-link">Show all portals</a>
+                    </div>
+                @endif
+                
                 <!-- Card container with fixed height -->
                 <div class="card-container">
                     <div class="row">
@@ -50,6 +77,9 @@
                                 <a href="{{ route('portal.click', $item->id_portal_utama) }}" class="text-decoration-none">
                                     <div class="card portal-card">
                                         <div class="card-body d-flex flex-column justify-content-center align-items-center py-2">
+                                            <div class="portal-icon-wrapper">
+                                                <i class="fas fa-portal"></i>
+                                            </div>
                                             <h4 class="text-center portal-title mb-1">{{ $item->nama_portal_user }}</h4>
                                             <div class="text-center portal-subtitle">{{ $item->keterangan_user }}</div>
                                         </div>
@@ -68,7 +98,7 @@
                     </div>
                 </div>
 
-                <!-- Pagination - keeping unchanged -->
+                <!-- Pagination -->
                 <div class="pagination-container">
                     @if(isset($portalItems) && $portalItems->lastPage() > 1)
                     <div class="row mt-3">
@@ -133,12 +163,51 @@
     </div>
 </div>
 
-<!-- Copyright footer - updated with white text and no underline -->
+<!-- Copyright footer -->
 <div class="copyright-footer">
     <div class="container">
          <a href="#" class="copyright-link" data-bs-toggle="modal" data-bs-target="#loginModal">Copyright © 2025 PLN Indonesia Power Services. All Rights Reserved</a>
     </div>
 </div>
+ <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="login-container">
+                        <!-- Left side - Image with Component label -->
+                        <div class="login-image" style="background-image: url('{{asset('storage/images/bg-login.jpeg') }}')">
+                            <div class="component-label">
+                                <span class="component-icon"></span> 
+                            </div>
+                        </div>
+                        
+                        <!-- Right side - Login form -->
+                        <div class="login-form">
+                            <!-- Logo and title -->
+                            <div class="login-logo">
+                                <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo">
+                                <div>
+                                    <br>
+                                </div>
+                            </div>
+                            
+                            <h3 class="login-title">Login Admin</h3>
+                            
+                            <!-- Login form -->
+                            <form method="POST" action="{{ route('login') }}" style="width: 100%;">
+                                @csrf
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                <button type="submit" class="login-submit">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
 <style>
     /* Enhanced styling for wider carousel */
@@ -151,7 +220,7 @@
         padding: 15px;
         background-color: #0a0a5d;
         border-radius: 30px;
-        height: 100%;
+        height: 90%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -163,15 +232,14 @@
         border: 3px solid #f8da29;
         border-radius: 20px;
         width: 100%;
-        /* Removed fixed max-height to prevent cropping */
     }
     
     .company-image {
         width: 100%;
         height: auto;
         display: block;
-        object-fit: contain; /* Changed from 'cover' to 'contain' to prevent cropping */
-        max-height: 450px; /* Set a reasonable max-height for the image */
+        object-fit: contain;
+        max-height: 450px;
     }
     
     /* Carousel styling */
@@ -185,25 +253,25 @@
     
     .carousel-item {
         width: 100%;
-        text-align: center; /* Center images horizontally */
-        padding: 10px 0; /* Add some padding to prevent images touching the borders */
+        text-align: center;
+        padding: 10px 0;
     }
     
     /* Styling untuk tombol next/prev */
     .carousel-control-prev, .carousel-control-next {
         width: 10%;
         opacity: 0.7;
-        background-color: rgba(0,0,0,0.2); /* Added slight background to buttons */
-        border-radius: 0 15px 15px 0; /* Rounded corners on right button */
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 0 15px 15px 0;
     }
     
     .carousel-control-prev {
-        border-radius: 15px 0 0 15px; /* Rounded corners on left button */
+        border-radius: 15px 0 0 15px;
     }
     
     .carousel-control-prev:hover, .carousel-control-next:hover {
         opacity: 1;
-        background-color: rgba(0,0,0,0.4); /* Darker on hover */
+        background-color: rgba(0,0,0,0.4);
     }
     
     .company-description {
@@ -231,7 +299,6 @@
         width: 98%;
     }
     
-    /* Updated copyright link styling */
     .copyright-link {
         color: white !important;
         text-decoration: none !important;
@@ -254,45 +321,70 @@
     
     /* Card container with fixed minimum height */
     .card-container {
-        min-height: 370px; /* Height for 3 rows of cards */
+        min-height: 370px;
     }
     
-    .portal-card {
-        border-radius: 10px;
-        transition: transform 0.3s, box-shadow 0.3s;
-        border: none;
-        background-color: #333;
-        color: white;
-        min-height: 100px;
-        overflow: hidden;
-        width: 100%;
-        max-width: 100%; /* Make cards fill their container */
-    }
-    
-    /* Empty placeholder for maintaining layout */
-    .card-placeholder {
-        min-height: 100px;
-        visibility: hidden;
-    }
-    
-    .portal-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-    
-    .portal-title {
-        font-family: 'Jura', sans-serif;
-        font-weight: bold;
-        margin-bottom: 0;
-        color: white;
-        font-size: 1.1rem;
-    }
-    
-    .portal-subtitle {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.8rem;
-        padding: 0 5px;
-    }
+.portal-card {
+    border-radius: 10px;
+    border: none;
+    background-color: #0a0a5d;
+    color: white;
+    height: 150px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #f8da29;
+}
+
+.portal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.portal-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #f8da29;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.portal-icon i {
+    color: #0a0a5d;
+    font-size: 1.5rem;
+}
+
+.portal-title {
+    font-family: 'Jura', sans-serif;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.portal-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+    line-height: 1.3;
+    padding: 0 10px;
+}
+
+/* Optional: Add yellow accent to card */
+.portal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background-color: #f8da29;
+    border-bottom-left-radius: 100%;
+}
     
     /* Fixed position for pagination */
     .pagination-container {
@@ -300,7 +392,7 @@
         height: 80px;
     }
     
-    /* Pagination styling */
+    /* Pagination styling - Updated to blue */
     .pagination {
         margin-top: 20px;
         margin-bottom: 10px;
@@ -314,22 +406,135 @@
         justify-content: center;
         font-size: 1.25rem;
         margin: 0 5px;
-        background-color: #333;
+        background-color: #0a0a5d;
         color: white;
-        border-color: #444;
+        border: 1px solid #f8da29;
     }
     
     .pagination .page-item.active .page-link {
-        background-color: #444;
-        border-color: #555;
-        color: white;
+        background-color: #f8da29;
+        border-color: #f8da29;
+        color: #0a0a5d;
+        font-weight: bold;
     }
     
     .pagination .page-item.disabled .page-link {
-        background-color: #333;
-        color: #666;
-        border-color: #444;
+        background-color: #0a0a5d;
+        color: #fff;
+        border-color: #f8da29;
+        opacity: 0.7;
     }
+    
+    /* Search Form Styling */
+    .search-input {
+        border-radius: 20px 0 0 20px;
+        padding: 10px 20px;
+        border: 2px solid #0a0a5d;
+        height: 45px;
+    }
+    
+    .search-btn {
+        border-radius: 0 20px 20px 0;
+        background-color: #0a0a5d;
+        color: white;
+        border: none;
+        height: 45px;
+        padding: 0 20px;
+    }
+    
+    .clear-btn {
+        border-radius: 20px;
+        margin-left: 10px;
+        height: 45px;
+        padding: 0 15px;
+        border: 1px solid #0a0a5d;
+    }
+    
+    .search-btn:hover {
+        background-color: #0a0a5d;
+        opacity: 0.9;
+    }
+    
+    .clear-btn:hover {
+        background-color: #f8f9fa;
+    }
+    
+    /* No results message */
+    .alert-info {
+        background-color: #0a0a5d;
+        color: white;
+        border-color: #f8da29;
+        border-radius: 10px;
+    }
+    
+    .alert-link {
+        color: #f8da29;
+        text-decoration: underline;
+    }
+           .login-container {
+            display: flex;
+            height: 550px;
+        }
+        
+        .login-image {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .login-form {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .login-logo img {
+            height: 45px; 
+            width: auto; 
+        }
+        
+        .login-title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Jura', sans-serif;
+        }
+        
+        .form-control {
+            height: 50px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .login-submit {
+            height: 40px;
+            width: 100%;
+            border-radius: 10px;
+            background-color: #13097C;
+            color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Jura', sans-serif;
+            cursor: pointer;
+        }
     
     /* Media query untuk layar kecil */
     @media (max-width: 767.98px) {
@@ -347,7 +552,17 @@
         }
         
         .company-image {
-            max-height: 350px; /* Smaller max-height on mobile */
+            max-height: 350px;
+        }
+        
+        .search-input, .search-btn, .clear-btn {
+            height: 40px;
+            font-size: 0.9rem;
+        }
+        
+        .portal-icon-wrapper {
+            width: 40px;
+            height: 40px;
         }
     }
 </style>
@@ -369,14 +584,14 @@
                 $(this).css({
                     'max-width': '100%',
                     'height': 'auto',
-                    'max-height': '450px' // Consistent max height
+                    'max-height': '450px'
                 });
             });
             
             // Make sure the carousel container adjusts to content
             $('.company-image-border').css({
                 'height': 'auto',
-                'min-height': '300px' // Minimum height to avoid layout shifts
+                'min-height': '300px'
             });
         }
         

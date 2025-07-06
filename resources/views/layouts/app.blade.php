@@ -55,7 +55,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 5px 15px;
             border-bottom: 2px solid #d0d0d0; 
         }
         
@@ -79,7 +79,18 @@
             color: #000000;
             text-decoration: none;
             font-family: 'Jura', 'Helvetica', sans-serif;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
+        
+        .login-btn:hover {
+    background-color: #13097C;
+    color: white;
+    box-shadow: 0 0 0 2px #13097C;
+    transform: scale(0.80); /* Mengecilkan ukuran saat hover */
+}
+
         
         /* Modal Styles - Updated to match the image */
         .modal-dialog {
@@ -151,8 +162,8 @@
         }
         
         .login-submit {
-            height: 50px;
-            width: 100%;
+            height: 30px;
+            width: 80%;
             border-radius: 10px;
             background-color: #13097C;
             color: white;
@@ -274,7 +285,7 @@
             <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo" class="logo-img">
         </div>
         
-        <a href="#" class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login Admin</a>
+        <a href="https://www.youtube.com/" class="login-btn" target="_blank">Create Ticket</a>
     </div>
     
     <!-- LONTAR INFORMATION CENTER Banner -->
@@ -290,46 +301,8 @@
         @yield('content')
     </main>
     
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="login-container">
-                        <!-- Left side - Image with Component label -->
-                        <div class="login-image" style="background-image: url('{{asset('storage/images/bg-login.jpeg') }}')">
-                            <div class="component-label">
-                                <span class="component-icon"></span> 
-                            </div>
-                        </div>
-                        
-                        <!-- Right side - Login form -->
-                        <div class="login-form">
-                            <!-- Logo and title -->
-                            <div class="login-logo">
-                                <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo">
-                                <div>
-                                    <br>
-                                </div>
-                            </div>
-                            
-                            <h3 class="login-title">Login Admin</h3>
-                            
-                            <!-- Login form -->
-                            <form method="POST" action="{{ route('login') }}" style="width: 100%;">
-                                @csrf
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                                <button type="submit" class="login-submit">Login</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Security Warning Modal - Will show automatically when page loads -->
+   
+    <!-- Security Warning Modal - Will show automatically on EVERY page load -->
     <div class="modal fade security-modal" id="securityModal" tabindex="-1" aria-labelledby="securityModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
