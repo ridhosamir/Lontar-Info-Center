@@ -184,7 +184,7 @@
         .banner-container {
             position: relative;
             width: 100%;
-            height: 220px;
+            height: 100px;
             overflow: hidden;
         }
         
@@ -281,7 +281,7 @@
     <div class="banner-container">
         <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="Power Plant" class="banner-image">
         <div class="banner-overlay">
-            <h1 class="banner-title">LONTAR INFORMATION<br>CENTER</h1>
+            <h1 class="banner-title">LONTAR INFORMATION CENTER</h1>
         </div>
     </div>
     
