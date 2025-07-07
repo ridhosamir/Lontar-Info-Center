@@ -11,6 +11,7 @@ class PortalUtamaController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $sort = $request->input('sort');
         $query = PortalUtama::query();
 
         if ($search) {
@@ -21,7 +22,13 @@ class PortalUtamaController extends Controller
             });
         }
 
-        $portalUtamas = $query->paginate(8)->appends($request->except('page'));
+        if ($sort === 'asc') {
+            $query->orderBy('nama_portal_user', 'asc');
+        } elseif ($sort === 'desc') {
+            $query->orderBy('nama_portal_user', 'desc');
+        }
+
+        $portalUtamas = $query->paginate(6)->appends($request->except('page'));
 
         return view('admins.portal-utama', compact('portalUtamas'));
     }
