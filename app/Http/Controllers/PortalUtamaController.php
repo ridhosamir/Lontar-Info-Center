@@ -29,7 +29,7 @@ class PortalUtamaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_portal_user' => 'required|string|max:255',
+            'nama_portal_user' => 'required|string|max:255|unique:portal_utamas,nama_portal_user',
             'keterangan_user' => 'nullable|string',
             'link' => 'required|url'
         ]);
