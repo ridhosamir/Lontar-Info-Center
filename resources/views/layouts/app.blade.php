@@ -354,7 +354,7 @@
             <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo" class="logo-img">
         </div>
         
-        <a href="https://www.youtube.com/" class="login-btn" target="_blank">Create Ticket</a>
+        <a href="http://helpdesk.plnindonesiapower.co.id/helpdesk/WebObjects/Helpdesk.woa" class="login-btn" target="_blank">Create Ticket</a>
     </div>
     
     <!-- LONTAR INFORMATION CENTER Banner -->
