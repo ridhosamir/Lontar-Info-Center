@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PortalUtama;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PortalUtamaController extends Controller
 {
@@ -30,7 +31,7 @@ class PortalUtamaController extends Controller
         $request->validate([
             'nama_portal_user' => 'required|string|max:255',
             'keterangan_user' => 'nullable|string',
-            'link' => 'nullable|url'
+            'link' => 'required|url'
         ]);
 
         try {
@@ -44,9 +45,14 @@ class PortalUtamaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_portal_user' => 'required|string|max:255',
+            'nama_portal_user' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('portal_utamas', 'nama_portal_user')->ignore($id, 'id_portal_utama')
+            ],
             'keterangan_user' => 'nullable|string',
-            'link' => 'nullable|url'
+            'link' => 'required|url',
         ]);
 
         try {

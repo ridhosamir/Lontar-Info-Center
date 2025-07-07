@@ -40,7 +40,7 @@ class WelcomeController extends Controller
                 });
             }
 
-            $portalItems = $query->paginate(6);
+            $portalItems = $query->paginate(9);
             $posters = Poster::all();
 
             // Check if this is an AJAX request

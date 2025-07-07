@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PortalAdmin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class PortalAdminController extends Controller
 {
@@ -13,9 +13,6 @@ class PortalAdminController extends Controller
         $this->middleware('auth:admin');
     }
 
-    /**
-     * Display a listing of the portal admins.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -34,15 +31,12 @@ class PortalAdminController extends Controller
         return view('admins.portal-admin', compact('portalAdmins'));
     }
 
-    /**
-     * Store a newly created portal admin in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nama_portal_admin' => 'required|string|max:255',
             'keterangan_admin' => 'nullable|string',
-            'link' => 'nullable|url',
+            'link' => 'required|url',
         ]);
 
         try {
@@ -58,15 +52,17 @@ class PortalAdminController extends Controller
         }
     }
 
-    /**
-     * Update the specified portal admin in storage.
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_portal_admin' => 'required|string|max:255',
+            'nama_portal_admin' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('portal_admins', 'nama_portal_admin')->ignore($id, 'id_portal_admin')
+            ],
             'keterangan_admin' => 'nullable|string',
-            'link' => 'nullable|url',
+            'link' => 'required|url',
         ]);
 
         try {
@@ -83,9 +79,6 @@ class PortalAdminController extends Controller
         }
     }
 
-    /**
-     * Remove the specified portal admin from storage.
-     */
     public function destroy($id)
     {
         try {
