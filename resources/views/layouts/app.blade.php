@@ -347,7 +347,7 @@
         </div>
 
         <a href="http://helpdesk.plnindonesiapower.co.id/helpdesk/WebObjects/Helpdesk.woa" class="create-ticket-btn"
-            target="_blank">Create Ticket</a>
+            target="_blank">Buat Tiket</a>
     </div>
 
     <!-- LONTAR INFORMATION CENTER Banner -->
