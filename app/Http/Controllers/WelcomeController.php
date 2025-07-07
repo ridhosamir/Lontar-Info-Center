@@ -20,6 +20,7 @@ class WelcomeController extends Controller
     {
         try {
             $search = $request->input('search');
+            $isAjax = $request->input('ajax', 0);
             
             // Check if click_count column exists
             $hasClickCountColumn = DB::getSchemaBuilder()->hasColumn('portal_utamas', 'click_count');
@@ -42,9 +43,31 @@ class WelcomeController extends Controller
             $portalItems = $query->paginate(6);
             $posters = Poster::all();
 
-            return view('welcome', compact('portalItems', 'search','posters'));
+            // Check if this is an AJAX request
+            if ($isAjax == 1) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $portalItems->items(),
+                    'pagination' => [
+                        'current_page' => $portalItems->currentPage(),
+                        'last_page' => $portalItems->lastPage(),
+                        'per_page' => $portalItems->perPage(),
+                        'total' => $portalItems->total()
+                    ]
+                ]);
+            }
+
+            return view('welcome', compact('portalItems', 'search', 'posters'));
         } catch (QueryException $e) {
-            // Fallback if there's any database error
+            // Handle AJAX error responses
+            if ($request->input('ajax', 0) == 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Database error occurred'
+                ]);
+            }
+            
+            // Fallback for regular requests
             return view('welcome')->with('error', 'Database error occurred');
         }
     }

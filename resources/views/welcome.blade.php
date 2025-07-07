@@ -13,22 +13,41 @@
                 <div class="company-image-border">
                     <!-- Dynamic Carousel from Database -->
                     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <!-- Indicators -->
+                        <div class="carousel-indicators">
+                            @forelse($posters as $index => $poster)
+                                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                            @empty
+                                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            @endforelse
+                        </div>
+                        
                         <!-- The slideshow/carousel -->
                         <div class="carousel-inner">
                             @forelse($posters as $index => $poster)
                                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                    <img src="{{ asset('images/posters/' . $poster->gambar) }}" alt="PLN Indonesia Power Plant {{ $index + 1 }}" class="company-image">
+                                    <div class="poster-container">
+                                        <img src="{{ asset('images/posters/' . $poster->gambar) }}" alt="PLN Indonesia Power Plant {{ $index + 1 }}" class="company-image">
+                                    </div>
                                 </div>
                             @empty
                                 <!-- Fallback images if no posters in database -->
                                 <div class="carousel-item active">
-                                    <img src="{{ asset('storage/images/bg-login.jpeg') }}" alt="PLN Indonesia Power Plant 1" class="company-image">
+                                    <div class="poster-container">
+                                        <img src="{{ asset('storage/images/bg-login.jpeg') }}" alt="PLN Indonesia Power Plant 1" class="company-image">
+                                    </div>
                                 </div>
                                 <div class="carousel-item">
-                                    <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="PLN Indonesia Power Plant 2" class="company-image">
+                                    <div class="poster-container">
+                                        <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="PLN Indonesia Power Plant 2" class="company-image">
+                                    </div>
                                 </div>
                                 <div class="carousel-item">
-                                    <img src="{{ asset('storage/images/poster.jpeg') }}" alt="PLN Indonesia Power Plant 3" class="company-image">
+                                    <div class="poster-container">
+                                        <img src="{{ asset('storage/images/poster.jpeg') }}" alt="PLN Indonesia Power Plant 3" class="company-image">
+                                    </div>
                                 </div>
                             @endforelse
                         </div>
@@ -36,9 +55,11 @@
                         <!-- Left and right controls/icons -->
                         <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
+                            <span class="visually-hidden">Previous</span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
                             <span class="carousel-control-next-icon"></span>
+                            <span class="visually-hidden">Next</span>
                         </button>
                     </div>
                 </div>
@@ -48,25 +69,25 @@
         <!-- Right side: Portal Cards -->
         <div class="col-md-7">
             <div class="portal-section">
-                <!-- Search Form - Moved to top of cards -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <form action="{{ route('welcome') }}" method="GET">
-                            <div class="input-group">
-                                <input type="text" name="search" class="form-control search-input" 
-                                placeholder="Search portals..." value="{{ request('search') }}">
-                                <button class="btn btn-primary search-btn" type="submit">
-                                    <i class="fas fa-search"></i> Search
-                                </button>
-                                @if(request('search'))
-                                    <a href="{{ route('welcome') }}" class="btn btn-outline-secondary clear-btn">
-                                        <i class="fas fa-times"></i> Clear
-                                    </a>
-                                @endif
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <!-- Search Form with Red Clear Button -->
+<div class="row mb-4">
+    <div class="col-12">
+        <form action="{{ route('welcome') }}" method="GET">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control search-input" 
+                placeholder="Search portals..." value="{{ request('search') }}">
+                <button class="btn btn-primary search-btn" type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('welcome') }}" class="btn btn-danger clear-btn">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                @endif
+            </div>
+        </form>
+    </div>
+</div>
 
                 @if($portalItems->isEmpty() && request('search'))
                     <div class="alert alert-info text-center">
@@ -81,7 +102,8 @@
                         @if(isset($portalItems) && count($portalItems) > 0)
                             @foreach($portalItems as $item)
                             <div class="col-md-4 col-sm-6 mb-4">
-                                <a href="{{ route('portal.click', $item->id_portal_utama) }}" class="text-decoration-none">
+                                <!-- Added target="_blank" to open in new tab -->
+                                <a href="{{ route('portal.click', $item->id_portal_utama) }}" class="text-decoration-none" target="_blank">
                                     <div class="card portal-card">
                                         <div class="card-body d-flex flex-column justify-content-center align-items-center py-2">
                                             <div class="portal-icon-wrapper">
@@ -221,40 +243,83 @@
         padding: 20px 0;
     }
     
+    /* ENHANCED: Updated carousel container styling for more elegant look */
     .company-image-wrapper {
         position: relative;
         padding: 15px;
         background-color: #0a0a5d;
-        border-radius: 30px;
+        border-radius: 20px;
         height: 90%;
         display: flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
     }
     
+    /* ENHANCED: Improved border styling with gradient effect */
     .company-image-border {
         position: relative;
         overflow: hidden;
-        border: 3px solid #f8da29;
-        border-radius: 20px;
+        border-radius: 15px;
         width: 100%;
+        background: linear-gradient(135deg, rgba(248, 218, 41, 0.1), rgba(248, 218, 41, 0.3));
+        box-shadow: inset 0 0 0 2px #f8da29;
     }
     
+    /* ENHANCED: Added poster container for better framing */
+    .poster-container {
+        padding: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* ENHANCED: Improved image styling */
     .company-image {
         width: 100%;
         height: auto;
         display: block;
         object-fit: contain;
         max-height: 450px;
+        border-radius: 8px;
+        transition: transform 0.5s ease;
+    }
+    
+    /* ENHANCED: Added hover effect for images */
+    .poster-container:hover .company-image {
+        transform: scale(1.02);
+    }
+    
+    /* ENHANCED: Carousel indicators styling */
+    .carousel-indicators {
+        margin-bottom: 0;
+        bottom: 10px;
+    }
+    
+    .carousel-indicators button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin: 0 5px;
+        background-color: rgba(248, 218, 41, 0.5);
+        border: 1px solid rgba(248, 218, 41, 0.8);
+    }
+    
+    .carousel-indicators button.active {
+        background-color: #f8da29;
     }
     
     /* Carousel styling */
     .carousel {
         width: 100%;
+        border-radius: 15px;
+        overflow: hidden;
     }
     
     .carousel-inner {
         width: 100%;
+        border-radius: 15px;
+        overflow: hidden;
     }
     
     .carousel-item {
@@ -263,21 +328,36 @@
         padding: 10px 0;
     }
     
-    /* Styling untuk tombol next/prev */
+    /* ENHANCED: Improved control buttons styling */
     .carousel-control-prev, .carousel-control-next {
-        width: 10%;
-        opacity: 0.7;
-        background-color: rgba(0,0,0,0.2);
-        border-radius: 0 15px 15px 0;
+        width: 40px;
+        height: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(10, 10, 93, 0.7);
+        border-radius: 50%;
+        opacity: 0.8;
+        margin: 0 10px;
     }
     
     .carousel-control-prev {
-        border-radius: 15px 0 0 15px;
+        left: 10px;
+    }
+    
+    .carousel-control-next {
+        right: 10px;
     }
     
     .carousel-control-prev:hover, .carousel-control-next:hover {
         opacity: 1;
-        background-color: rgba(0,0,0,0.4);
+        background-color: rgba(10, 10, 93, 0.9);
+    }
+    
+    /* ENHANCED: Control icons styling */
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        width: 20px;
+        height: 20px;
+        filter: drop-shadow(0 0 2px rgba(248, 218, 41, 0.8));
     }
     
     .company-description {
@@ -448,22 +528,27 @@
         padding: 0 20px;
     }
     
-    .clear-btn {
-        border-radius: 20px;
-        margin-left: 10px;
-        height: 45px;
-        padding: 0 15px;
-        border: 1px solid #0a0a5d;
-    }
-    
+
+/* Clear button styling - changed to red with white text */
+.clear-btn {
+    border-radius: 20px;
+    margin-left: 10px;
+    height: 45px;
+    padding: 0 15px;
+    background-color: #e53935; /* Red background */
+    color: white; 
+    border: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
     .search-btn:hover {
         background-color: #0a0a5d;
         opacity: 0.9;
     }
     
-    .clear-btn:hover {
-        background-color: #f8f9fa;
-    }
+
     
     /* No results message */
     .alert-info {
@@ -569,6 +654,23 @@
         .portal-icon-wrapper {
             width: 40px;
             height: 40px;
+        }
+        
+        /* ENHANCED: Mobile adjustments for carousel */
+        .carousel-control-prev, .carousel-control-next {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            width: 15px;
+            height: 15px;
+        }
+        
+        .carousel-indicators button {
+            width: 8px;
+            height: 8px;
+            margin: 0 3px;
         }
     }
 </style>

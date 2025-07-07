@@ -85,11 +85,11 @@
         }
         
         .login-btn:hover {
-    background-color: #13097C;
-    color: white;
-    box-shadow: 0 0 0 2px #13097C;
-    transform: scale(0.80); /* Mengecilkan ukuran saat hover */
-}
+            background-color: #13097C;
+            color: white;
+            box-shadow: 0 0 0 2px #13097C;
+            transform: scale(0.80); /* Mengecilkan ukuran saat hover */
+        }
 
         
         /* Modal Styles - Updated to match the image */
@@ -266,6 +266,75 @@
         .security-close-btn:hover {
             background-color: #c62828;
         }
+
+        /* Reminder Modal Styles */
+        .reminder-modal .modal-dialog {
+            max-width: 700px;
+        }
+        
+        .reminder-modal .modal-content {
+            border-radius: 8px;
+            padding: 0;
+        }
+        
+        .reminder-modal .modal-header {
+            background-color: #13097C;
+            color: white;
+            padding: 15px 20px;
+            border-bottom: none;
+        }
+        
+        .reminder-modal .modal-title {
+            font-family: 'Jura', sans-serif;
+            font-weight: bold;
+            font-size: 22px;
+        }
+        
+        .reminder-modal .modal-body {
+            padding: 20px;
+        }
+        
+        .reminder-message {
+            font-family: 'Jura', sans-serif;
+            font-size: 20px;
+            text-align: center;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        
+        .reminder-image {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 5px;
+            max-height: 500px;
+            object-fit: contain;
+        }
+        
+        .reminder-modal .modal-footer {
+            border-top: none;
+            justify-content: center;
+            padding-bottom: 20px;
+        }
+        
+        .reminder-close-btn {
+            background-color: #13097C;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-size: 18px;
+            font-family: 'Jura', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reminder-close-btn:hover {
+            background-color: #0a0557;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -302,31 +371,154 @@
     </main>
     
    
-    <!-- Security Warning Modal - Will show automatically on EVERY page load -->
+    <!-- Security Warning Modal - Diisi dari database -->
     <div class="modal fade security-modal" id="securityModal" tabindex="-1" aria-labelledby="securityModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="security-warning">
-                        Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.
+                    <!-- Untuk menampilkan pesan dari database -->
+                    <div id="securityMessageContainer" class="security-warning">
+                        <!-- Pesan akan diisi dari database -->
                     </div>
+                    
+                    <!-- Untuk menampilkan gambar dari database -->
+                    <div id="securityImageContainer" style="display: none;" class="text-center mb-4">
+                        <img id="securityImage" src="" alt="Security Warning" class="img-fluid rounded" style="max-height: 400px;">
+                    </div>
+                    
+                    <!-- Loading indicator -->
+                    <div id="securityLoading" class="text-center py-3">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    
                     <button type="button" class="security-close-btn" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
     
+   
+    
     <!-- Bootstrap & jQuery JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Script to show security modal automatically on EVERY page load -->
+    <!-- Script untuk menampilkan modal -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Selalu tampilkan modal setiap kali halaman dimuat
+            // Set up CSRF token for AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
+            console.log("DOM fully loaded");
+            
+            // Inisialisasi dan tampilkan modal security
             var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
             securityModal.show();
+            
+            // Tambahkan event listener untuk modal security saat ditutup
+            document.getElementById('securityModal').addEventListener('hidden.bs.modal', function() {
+                console.log("Security modal closed, fetching reminder...");
+                fetchAndShowReminder();
+            });
+            
+            // Ambil pesan security dari database saat memuat halaman
+            fetchSecurityContent();
         });
+
+        // Fungsi untuk mengambil konten security dari database
+        function fetchSecurityContent() {
+            console.log("Fetching security content...");
+            
+            $.ajax({
+                url: '/get-reminder',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    console.log("Security content response:", response);
+                    
+                    // Sembunyikan loading
+                    $('#securityLoading').hide();
+                    
+                    if (response.success) {
+                        if (response.type === 'gambar') {
+                            // Tampilkan gambar security
+                            $('#securityImage').attr('src', response.image_path);
+                            $('#securityImageContainer').show();
+                            $('#securityMessageContainer').hide();
+                        } else if (response.type === 'pesan') {
+                            // Tampilkan pesan security
+                            $('#securityMessageContainer').text(response.message);
+                            $('#securityMessageContainer').show();
+                            $('#securityImageContainer').hide();
+                        }
+                    } else {
+                        // Jika tidak ada data dari database, tampilkan pesan default
+                        $('#securityMessageContainer').text('Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.');
+                        $('#securityMessageContainer').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to load security content:', error);
+                    
+                    // Sembunyikan loading dan tampilkan pesan default
+                    $('#securityLoading').hide();
+                    $('#securityMessageContainer').text('Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.');
+                    $('#securityMessageContainer').show();
+                }
+            });
+        }
+
+        // Fungsi untuk mendapatkan dan menampilkan reminder
+        function fetchAndShowReminder() {
+            console.log("Fetching reminder...");
+            
+            $.ajax({
+                url: '/get-reminder',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    console.log("Reminder response:", response);
+                    
+                    // Sembunyikan loading indicator
+                    $('#reminderLoading').hide();
+                    
+                    if (response.success) {
+                        if (response.type === 'gambar') {
+                            // Tampilkan gambar
+                            console.log("Showing image reminder:", response.image_path);
+                            $('#reminderImage').attr('src', response.image_path);
+                            $('#reminderImageContainer').show();
+                            $('#reminderMessageContainer').hide();
+                        } else if (response.type === 'pesan') {
+                            // Tampilkan pesan
+                            console.log("Showing text reminder:", response.message);
+                            $('#reminderMessage').text(response.message);
+                            $('#reminderMessageContainer').show();
+                            $('#reminderImageContainer').hide();
+                        }
+                        
+                        // Tampilkan modal reminder
+                        var reminderModal = new bootstrap.Modal(document.getElementById('reminderModal'));
+                        reminderModal.show();
+                    } else {
+                        console.log("No reminder available or error occurred");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to load reminder:', error);
+                    console.error('Status:', status);
+                    
+                    // Sembunyikan loading
+                    $('#reminderLoading').hide();
+                }
+            });
+        }
     </script>
 </body>
 </html>
