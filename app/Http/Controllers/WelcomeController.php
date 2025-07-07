@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PortalUtama;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use App\Models\Poster; 
 
 class WelcomeController extends Controller
 {
@@ -39,8 +40,9 @@ class WelcomeController extends Controller
             }
 
             $portalItems = $query->paginate(6);
+            $posters = Poster::all();
 
-            return view('welcome', compact('portalItems', 'search'));
+            return view('welcome', compact('portalItems', 'search','posters'));
         } catch (QueryException $e) {
             // Fallback if there's any database error
             return view('welcome')->with('error', 'Database error occurred');

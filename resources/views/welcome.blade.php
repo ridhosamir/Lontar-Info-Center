@@ -11,19 +11,26 @@
         <div class="col-md-5">
             <div class="company-image-wrapper">
                 <div class="company-image-border">
-                    <!-- Simplified Carousel -->
+                    <!-- Dynamic Carousel from Database -->
                     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
                         <!-- The slideshow/carousel -->
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="{{ asset('storage/images/bg-login.jpeg') }}" alt="PLN Indonesia Power Plant 1" class="company-image">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="PLN Indonesia Power Plant 2" class="company-image">
-                            </div>
-                             <div class="carousel-item"> 
-                                <img src="{{ asset('storage/images/poster.jpeg') }}" alt="PLN Indonesia Power Plant 3" class="company-image">
-                             </div>
+                            @forelse($posters as $index => $poster)
+                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                    <img src="{{ asset('images/posters/' . $poster->gambar) }}" alt="PLN Indonesia Power Plant {{ $index + 1 }}" class="company-image">
+                                </div>
+                            @empty
+                                <!-- Fallback images if no posters in database -->
+                                <div class="carousel-item active">
+                                    <img src="{{ asset('storage/images/bg-login.jpeg') }}" alt="PLN Indonesia Power Plant 1" class="company-image">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="PLN Indonesia Power Plant 2" class="company-image">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('storage/images/poster.jpeg') }}" alt="PLN Indonesia Power Plant 3" class="company-image">
+                                </div>
+                            @endforelse
                         </div>
                         
                         <!-- Left and right controls/icons -->
@@ -47,7 +54,7 @@
                         <form action="{{ route('welcome') }}" method="GET">
                             <div class="input-group">
                                 <input type="text" name="search" class="form-control search-input" 
-                                       placeholder="Search portals..." value="{{ request('search') }}">
+                                placeholder="Search portals..." value="{{ request('search') }}">
                                 <button class="btn btn-primary search-btn" type="submit">
                                     <i class="fas fa-search"></i> Search
                                 </button>
@@ -208,7 +215,6 @@
         </div>
     </div>
     
-
 <style>
     /* Enhanced styling for wider carousel */
     .company-info-container {
