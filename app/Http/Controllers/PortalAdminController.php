@@ -16,6 +16,7 @@ class PortalAdminController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $sort = $request->input('sort');
         $query = PortalAdmin::query();
 
         if ($search) {
@@ -26,7 +27,13 @@ class PortalAdminController extends Controller
             });
         }
 
-        $portalAdmins = $query->paginate(8)->appends($request->except('page'));
+        if ($sort === 'asc') {
+            $query->orderBy('nama_portal_admin', 'asc');
+        } elseif ($sort === 'desc') {
+            $query->orderBy('nama_portal_admin', 'desc');
+        }
+
+        $portalAdmins = $query->paginate(6)->appends($request->except('page'));
 
         return view('admins.portal-admin', compact('portalAdmins'));
     }

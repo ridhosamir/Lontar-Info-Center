@@ -483,6 +483,17 @@
             color: #fff;
         }
 
+        .btn-custom-danger {
+            background-color: #e53935;
+            color: white;
+            border-color: #e53935;
+        }
+
+        .btn-custom-danger:hover {
+            background-color: #c62828;
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -718,12 +729,32 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Portal Admin List</span>
                     <form action="{{ route('admins.dashboard-admin') }}" method="GET" class="d-flex gap-2"
-                        style="max-width: 400px;">
+                        style="max-width: 500px;">
                         <input type="text" name="search" class="form-control" placeholder="Cari portal..."
                             value="{{ request('search') }}">
+                        <input type="hidden" name="sort" id="sort-input" value="{{ request('sort') }}">
                         <button type="submit" class="btn btn-custom-primary">
                             <i class="fas fa-search"></i>
                         </button>
+                        <a href="{{ route('admins.dashboard-admin') }}" id="clear-search-btn"
+                            class="btn btn-custom-danger"
+                            style="display: {{ request('search') ? 'inline-block' : 'none' }};">
+                            <i class="fas fa-times"></i>
+                        </a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-filter"></i> Urutkan
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item sort-option" href="#"
+                                        data-sort="default">Default</a></li>
+                                <li><a class="dropdown-item sort-option" href="#" data-sort="asc">Abjad
+                                        (A-Z)</a></li>
+                                <li><a class="dropdown-item sort-option" href="#" data-sort="desc">Abjad
+                                        (Z-A)</a></li>
+                            </ul>
+                        </div>
                     </form>
                 </div>
                 <div class="card-body">
@@ -756,7 +787,26 @@
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             const searchInput = document.getElementById('search-input');
+            const clearSearchBtn = document.getElementById('clear-search-btn');
             const portalListContainer = document.querySelector('.portal-list-container');
+            const sortInput = document.getElementById('sort-input');
+            const sortOptions = document.querySelectorAll('.sort-option');
+
+            sortOptions.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const sortValue = this.dataset
+                        .sort;
+                    sortInput.value = sortValue;
+
+                    this.closest('form').submit();
+                });
+            });
+
+            if (searchInput && searchInput.value) {
+                clearSearchBtn.style.display = 'inline-block';
+            }
 
             // Toggle sidebar when hamburger button is clicked
             hamburgerBtn.addEventListener('click', function() {

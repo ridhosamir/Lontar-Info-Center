@@ -10,6 +10,7 @@ class DashboardAdminController extends Controller
     public function showDashboard(Request $request)
     {
         $search = $request->input('search');
+        $sort = $request->input('sort');
         $query = PortalAdmin::query();
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -19,7 +20,13 @@ class DashboardAdminController extends Controller
             });
         }
 
-        $portalAdmins = $query->paginate(4);
+        if ($sort === 'asc') {
+            $query->orderBy('nama_portal_admin', 'asc');
+        } elseif ($sort === 'desc') {
+            $query->orderBy('nama_portal_admin', 'desc');
+        }
+
+        $portalAdmins = $query->paginate(6)->appends($request->except('page'));
 
         return view('admins.dashboard-admin', compact('portalAdmins'));
     }

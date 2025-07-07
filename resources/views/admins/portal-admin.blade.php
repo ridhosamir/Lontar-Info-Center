@@ -714,13 +714,28 @@
                     style="max-width: 500px;">
                     <input type="text" name="search" class="form-control" placeholder="Cari portal..."
                         value="{{ request('search') }}">
+                    <input type="hidden" name="sort" id="sort-input" value="{{ request('sort') }}">
                     <button type="submit" class="btn btn-custom-primary">
                         <i class="fas fa-search"></i>
                     </button>
                     <a href="{{ route('admins.portal-admin') }}" id="clear-search-btn" class="btn btn-custom-danger"
-                        style="display: none;">
+                        style="display: {{ request('search') ? 'inline-block' : 'none' }};">
                         <i class="fas fa-times"></i>
                     </a>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item sort-option" href="#" data-sort="default">Default</a>
+                            </li>
+                            <li><a class="dropdown-item sort-option" href="#" data-sort="asc">Abjad (A-Z)</a>
+                            </li>
+                            <li><a class="dropdown-item sort-option" href="#" data-sort="desc">Abjad (Z-A)</a>
+                            </li>
+                        </ul>
+                    </div>
                 </form>
             </div>
 
@@ -867,6 +882,19 @@
             const createModal = new bootstrap.Modal(document.getElementById('createModal'));
             const searchInput = document.querySelector('input[name="search"]');
             const clearSearchBtn = document.getElementById('clear-search-btn');
+            const sortInput = document.getElementById('sort-input');
+            const sortOptions = document.querySelectorAll('.sort-option');
+
+            sortOptions.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const sortValue = this.dataset.sort;
+                    sortInput.value = sortValue;
+
+                    this.closest('form').submit();
+                });
+            });
 
             if (searchInput && searchInput.value) {
                 clearSearchBtn.style.display = 'inline-block';
