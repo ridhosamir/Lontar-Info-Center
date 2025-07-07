@@ -74,13 +74,13 @@
                         <form action="{{ route('welcome') }}" method="GET">
                             <div class="input-group">
                                 <input type="text" name="search" class="form-control search-input" 
-                                placeholder="Search portals..." value="{{ request('search') }}">
+                                placeholder="Cari Aplikasi..." value="{{ request('search') }}">
                                 <button class="btn btn-primary search-btn" type="submit">
-                                    <i class="fas fa-search"></i> Search
+                                    <i class="fas fa-search"></i> Cari
                                 </button>
                                 @if(request('search'))
                                     <a href="{{ route('welcome') }}" class="btn btn-danger clear-btn">
-                                        <i class="fas fa-times"></i> Clear
+                                        <i class="fas fa-times"></i> Hapus
                                     </a>
                                 @endif
                             </div>
@@ -91,7 +91,7 @@
                 @if($portalItems->isEmpty() && request('search'))
                     <div class="alert alert-info text-center">
                         No portals found for "{{ request('search') }}". 
-                        <a href="{{ route('welcome') }}" class="alert-link">Show all portals</a>
+                        <a href="{{ route('welcome') }}" class="alert-link">Tampilkan semua aplikasi</a>
                     </div>
                 @endif
                 
@@ -223,7 +223,7 @@
                         
                         <h3 class="login-title">Login Admin</h3>
                         
-                        <!-- Error messages handling (similar to Buns Ceramics style) -->
+                        <!-- Error messages handling -->
                         @if($errors->any())
                             <div class="alert alert-danger login-error-alert" role="alert">
                                 <i class="fas fa-exclamation-circle"></i> 
@@ -244,7 +244,7 @@
                         @endif
                         
                         <!-- Login form -->
-                        <form method="POST" action="{{ route('login') }}" style="width: 100%;" onsubmit="return validateLoginForm()">
+                        <form id="loginForm" method="POST" action="{{ route('login') }}" style="width: 100%;" onsubmit="return validateLoginForm()">
                             @csrf
                             <div class="form-group mb-3">
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ old('username') }}">
@@ -330,7 +330,7 @@
         height: auto;
         display: block;
         object-fit: contain;
-        max-height: 800px; /* Increased height */
+        max-height: 600px; /* Increased height */
         border-radius: 8px;
         transition: transform 0.5s ease;
     }
@@ -457,7 +457,7 @@
     border: none;
     background-color: #0a0a5d;
     color: white;
-    height: 160px; /* Increased height */
+    height: 140px; 
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
@@ -490,14 +490,14 @@
 .portal-title {
     font-family: 'Jura', sans-serif;
     font-weight: bold;
-    font-size: 1.2rem; /* Increased font size */
+    font-size: 1.2rem; 
     color: white;
     margin-bottom: 8px;
 }
 
 .portal-subtitle {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem; /* Increased font size */
+    font-size: 0.9rem; 
     line-height: 1.3;
     padding: 0 10px;
 }
@@ -517,13 +517,15 @@
     
     .pagination-container {
         position: relative;
-        height: 80px;
+        height: 50px;
+        
+        
     }
     
 
     .pagination {
-        margin-top: 20px;
-        margin-bottom: 10px;
+
+        margin-bottom: 5px;
     }
     
     .pagination .page-link {
@@ -558,7 +560,7 @@
         border-radius: 20px 0 0 20px;
         padding: 10px 20px;
         border: 2px solid #0a0a5d;
-        height: 50px; /* Increased height */
+        height: 50px; 
     }
     
     .search-btn {
@@ -567,7 +569,7 @@
         color: white;
         border: none;
         height: 50px;
-        padding: 0 20px;
+        padding: 0 30px;
     }
     
 
@@ -811,11 +813,32 @@
             adjustCarouselImages();
         });
         
-        // Auto-show login modal if there's a login error
-        @if($errors->any())
-            $('#loginModal').modal('show');
-        @endif
+       $(document).ready(function(){
+    // Auto-show login modal if there's a login error
+    @if($errors->any())
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+            backdrop: 'static',  // Mencegah penutupan dengan klik di luar
+            keyboard: false      // Mencegah penutupan dengan tombol ESC
+        });
+        loginModal.show();
+    @endif
+    
+    // Handle form submission
+    $('#loginForm').on('submit', function(e) {
+        if (!validateLoginForm()) {
+            e.preventDefault();
+            // Pastikan modal tetap terbuka
+            var loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            if (!loginModal) {
+                loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+            }
+            loginModal.show();
+        }
     });
+});
     
     // Login validation function
     function validateLoginForm() {
@@ -843,6 +866,6 @@
         
         return isValid;
     }
-</script>
+    </script>
 @endpush
 @endsection

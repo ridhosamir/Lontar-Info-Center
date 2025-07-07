@@ -18,33 +18,30 @@ class AuthController extends Controller
     
     public function login(Request $request)
     {
-        // Validasi credentials
-        $credentials = $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
+        // Validasi input tidak kosong
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ], [
+            'username.required' => 'Username wajib diisi',
+            'password.required' => 'Password wajib diisi',
         ]);
+
+        $credentials = $request->only('username', 'password');
         
-        // Cek apakah login fields kosong
-        if (empty($credentials['username']) || empty($credentials['password'])) {
-            return back()->withErrors([
-                'username' => empty($credentials['username']) ? 'Username tidak boleh kosong' : null,
-                'password' => empty($credentials['password']) ? 'Password tidak boleh kosong' : null,
-            ])->withInput($request->except('password'));
-        }
-        
-        // Coba login dengan guard admin
-        if (Auth::guard('admin')->attempt([
-            'username' => $credentials['username'],
-            'password' => $credentials['password']
-        ])) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('admins.dashboard-admin')->with('success', 'Berhasil login');
+            return redirect()->route('admins.dashboard-admin')
+                         ->with('success', 'Login berhasil!');
         }
         
-        // Jika gagal login
-        return back()->withErrors([
-            'login' => 'Username atau password salah'
-        ])->withInput($request->except('password'));
+        // Redirect back to welcome page with errors and a flag to show the modal
+        return redirect()->route('welcome')
+            ->withInput($request->except('password'))
+            ->withErrors([
+                'login' => 'Username atau password salah',
+            ])
+            ->with('showLoginModal', true); // Add this session flag
     }
     
     public function logout(Request $request)
@@ -52,6 +49,6 @@ class AuthController extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/')->with('success', 'Berhasil logout');
+        return redirect('/')->with('success', 'Logout berhasil');
     }
 }
