@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLN Indonesia Power</title>
-    
+    <title>Lontar Information Center</title>
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    <!-- Bootstrap CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
     <style>
-        /* Reset dan Global */
         body {
             margin: 0;
             padding: 0;
         }
-        
+
         /* Container untuk topbar dan bendera */
         .top-container {
             position: relative;
@@ -26,29 +23,29 @@
             height: 15px;
             background-color: #13097C;
         }
-        
-        /* Flag container - diposisikan lebih jauh dari topbar */
+
+        /* Flag container */
         .flag-container {
             position: absolute;
             top: 0;
             right: -50px;
             height: 15px;
             display: flex;
-            gap: 10px; 
+            gap: 10px;
         }
-        
+
         .flag-yellow {
             width: 15px;
-            height: 25px; 
+            height: 20px;
             background-color: #ffff0c;
         }
-        
+
         .flag-red {
             width: 15px;
-            height: 32px; 
+            height: 20px;
             background-color: #e53935;
         }
-        
+
         /* Header Utama */
         .header {
             background-color: white;
@@ -56,71 +53,66 @@
             justify-content: space-between;
             align-items: center;
             padding: 5px 15px;
-            border-bottom: 2px solid #d0d0d0; 
+            border-bottom: 2px solid #d0d0d0;
         }
-        
+
         /* Logo dan Teks Container */
         .logo-container {
             display: flex;
             align-items: center;
         }
-                
+
         /* Logo Image */
         .logo-img {
-            height: 35px; 
+            height: 35px;
             width: auto;
             margin-right: 10px;
         }
-        
-        /* Login Admin */
-        .login-btn {
-            font-size: 22px;
+
+        .create-ticket-btn {
+            font-size: 18px;
             font-weight: bold;
-            color: #000000;
+            color: white;
             text-decoration: none;
             font-family: 'Jura', 'Helvetica', sans-serif;
-            padding: 10px 20px;
+            padding: 8px 10px;
             border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        
-        .login-btn:hover {
-            background-color: #13097C;
-            color: white;
-            box-shadow: 0 0 0 2px #13097C;
-            transform: scale(0.80); /* Mengecilkan ukuran saat hover */
+            background-color: #13097C !important; 
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: center;
         }
 
-        
-        /* Modal Styles - Updated to match the image */
+        /* Modal Styles */
         .modal-dialog {
             max-width: 800px;
             margin: 1.75rem auto;
         }
-        
+
         .modal-content {
             border-radius: 20px;
             overflow: hidden;
             border: none;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
-        
+
         .modal-body {
             padding: 0;
         }
-        
+
         .login-container {
             display: flex;
             height: 550px;
         }
-        
+
         .login-image {
             flex: 1;
             background-size: cover;
             background-position: center;
             position: relative;
         }
-        
+
         .login-form {
             flex: 1;
             padding: 40px;
@@ -129,7 +121,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .login-logo {
             text-align: center;
             margin-bottom: 10px;
@@ -137,12 +129,12 @@
             flex-direction: column;
             align-items: center;
         }
-        
+
         .login-logo img {
-            height: 45px; 
-            width: auto; 
+            height: 45px;
+            width: auto;
         }
-        
+
         .login-title {
             font-size: 28px;
             font-weight: bold;
@@ -150,7 +142,7 @@
             margin-bottom: 30px;
             font-family: 'Jura', sans-serif;
         }
-        
+
         .form-control {
             height: 50px;
             border-radius: 10px;
@@ -160,7 +152,7 @@
             margin-bottom: 20px;
             width: 100%;
         }
-        
+
         .login-submit {
             height: 30px;
             width: 80%;
@@ -173,7 +165,7 @@
             font-family: 'Jura', sans-serif;
             cursor: pointer;
         }
-        
+
         .component-label {
             position: absolute;
             top: 20px;
@@ -184,13 +176,13 @@
             display: flex;
             align-items: center;
         }
-        
+
         .component-icon {
             color: #b19aff;
             margin-right: 10px;
             font-size: 24px;
         }
-        
+
         /* Banner LONTAR INFORMATION CENTER */
         .banner-container {
             position: relative;
@@ -198,14 +190,14 @@
             height: 100px;
             overflow: hidden;
         }
-        
+
         .banner-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center;
         }
-        
+
         .banner-overlay {
             position: absolute;
             top: 0;
@@ -217,7 +209,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .banner-title {
             color: white;
             font-size: 4rem;
@@ -228,17 +220,17 @@
             letter-spacing: 2px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
-        
+
         /* Security Warning Modal */
         .security-modal .modal-dialog {
             max-width: 700px;
         }
-        
+
         .security-modal .modal-content {
             border-radius: 8px;
             padding: 20px;
         }
-        
+
         .security-warning {
             font-family: 'Jura', sans-serif;
             font-size: 24px;
@@ -246,7 +238,7 @@
             margin: 30px 20px;
             line-height: 1.5;
         }
-        
+
         .security-close-btn {
             background-color: #e53935;
             color: white;
@@ -262,7 +254,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .security-close-btn:hover {
             background-color: #c62828;
         }
@@ -271,29 +263,29 @@
         .reminder-modal .modal-dialog {
             max-width: 700px;
         }
-        
+
         .reminder-modal .modal-content {
             border-radius: 8px;
             padding: 0;
         }
-        
+
         .reminder-modal .modal-header {
             background-color: #13097C;
             color: white;
             padding: 15px 20px;
             border-bottom: none;
         }
-        
+
         .reminder-modal .modal-title {
             font-family: 'Jura', sans-serif;
             font-weight: bold;
             font-size: 22px;
         }
-        
+
         .reminder-modal .modal-body {
             padding: 20px;
         }
-        
+
         .reminder-message {
             font-family: 'Jura', sans-serif;
             font-size: 20px;
@@ -301,7 +293,7 @@
             margin: 20px;
             line-height: 1.6;
         }
-        
+
         .reminder-image {
             display: block;
             max-width: 100%;
@@ -311,13 +303,13 @@
             max-height: 500px;
             object-fit: contain;
         }
-        
+
         .reminder-modal .modal-footer {
             border-top: none;
             justify-content: center;
             padding-bottom: 20px;
         }
-        
+
         .reminder-close-btn {
             background-color: #13097C;
             color: white;
@@ -330,16 +322,17 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .reminder-close-btn:hover {
             background-color: #0a0557;
             transform: translateY(-2px);
         }
     </style>
 </head>
+
 <body>
-    <!-- Container untuk topbar dan bendera -->
     <div class="top-container">
+        
         <!-- Bendera di atas topbar -->
         <div class="flag-container">
             <div class="flag-blue"></div>
@@ -347,16 +340,16 @@
             <div class="flag-red"></div>
         </div>
     </div>
-    
-    <!-- Header utama -->
+
     <div class="header">
         <div class="logo-container">
             <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo" class="logo-img">
         </div>
-        
-        <a href="http://helpdesk.plnindonesiapower.co.id/helpdesk/WebObjects/Helpdesk.woa" class="login-btn" target="_blank">Create Ticket</a>
+
+        <a href="http://helpdesk.plnindonesiapower.co.id/helpdesk/WebObjects/Helpdesk.woa" class="create-ticket-btn"
+            target="_blank">Create Ticket</a>
     </div>
-    
+
     <!-- LONTAR INFORMATION CENTER Banner -->
     <div class="banner-container">
         <img src="{{ asset('storage/images/bg-banner.jpeg') }}" alt="Power Plant" class="banner-image">
@@ -364,48 +357,40 @@
             <h1 class="banner-title">LONTAR INFORMATION CENTER</h1>
         </div>
     </div>
-    
-    <!-- Content -->
+
     <main>
         @yield('content')
     </main>
-    
-   
-    <!-- Security Warning Modal - Diisi dari database -->
-    <div class="modal fade security-modal" id="securityModal" tabindex="-1" aria-labelledby="securityModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
+    <!-- Security Warning Modal -->
+    <div class="modal fade security-modal" id="securityModal" tabindex="-1" aria-labelledby="securityModalLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <!-- Untuk menampilkan pesan dari database -->
                     <div id="securityMessageContainer" class="security-warning">
-                        <!-- Pesan akan diisi dari database -->
                     </div>
-                    
-                    <!-- Untuk menampilkan gambar dari database -->
+
                     <div id="securityImageContainer" style="display: none;" class="text-center mb-4">
-                        <img id="securityImage" src="" alt="Security Warning" class="img-fluid rounded" style="max-height: 400px;">
+                        <img id="securityImage" src="" alt="Security Warning" class="img-fluid rounded"
+                            style="max-height: 400px;">
                     </div>
-                    
-                    <!-- Loading indicator -->
+
                     <div id="securityLoading" class="text-center py-3">
                         <div class="spinner-border text-danger" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </div>
-                    
+
                     <button type="button" class="security-close-btn" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-    
-   
-    
-    <!-- Bootstrap & jQuery JS -->
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Script untuk menampilkan modal -->
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Set up CSRF token for AJAX requests
@@ -414,37 +399,39 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            
+
             console.log("DOM fully loaded");
-            
-            // Inisialisasi dan tampilkan modal security
+
+            // Inisialisasi modal security
             var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
-            securityModal.show();
-            
+
+            // Cek apakah halaman di-load melalui aksi refresh
+            const navigationEntries = performance.getEntriesByType("navigation");
+            if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
+                securityModal.show();
+            }
+
             // Tambahkan event listener untuk modal security saat ditutup
             document.getElementById('securityModal').addEventListener('hidden.bs.modal', function() {
                 console.log("Security modal closed, fetching reminder...");
                 fetchAndShowReminder();
             });
-            
-            // Ambil pesan security dari database saat memuat halaman
+
             fetchSecurityContent();
         });
 
-        // Fungsi untuk mengambil konten security dari database
         function fetchSecurityContent() {
             console.log("Fetching security content...");
-            
+
             $.ajax({
                 url: '/get-reminder',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     console.log("Security content response:", response);
-                    
-                    // Sembunyikan loading
+
                     $('#securityLoading').hide();
-                    
+
                     if (response.success) {
                         if (response.type === 'gambar') {
                             // Tampilkan gambar security
@@ -459,35 +446,37 @@
                         }
                     } else {
                         // Jika tidak ada data dari database, tampilkan pesan default
-                        $('#securityMessageContainer').text('Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.');
+                        $('#securityMessageContainer').text(
+                            'Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.'
+                        );
                         $('#securityMessageContainer').show();
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('Failed to load security content:', error);
-                    
+
                     // Sembunyikan loading dan tampilkan pesan default
                     $('#securityLoading').hide();
-                    $('#securityMessageContainer').text('Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.');
+                    $('#securityMessageContainer').text(
+                        'Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.'
+                    );
                     $('#securityMessageContainer').show();
                 }
             });
         }
 
-        // Fungsi untuk mendapatkan dan menampilkan reminder
         function fetchAndShowReminder() {
             console.log("Fetching reminder...");
-            
+
             $.ajax({
                 url: '/get-reminder',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     console.log("Reminder response:", response);
-                    
-                    // Sembunyikan loading indicator
+
                     $('#reminderLoading').hide();
-                    
+
                     if (response.success) {
                         if (response.type === 'gambar') {
                             // Tampilkan gambar
@@ -502,7 +491,7 @@
                             $('#reminderMessageContainer').show();
                             $('#reminderImageContainer').hide();
                         }
-                        
+
                         // Tampilkan modal reminder
                         var reminderModal = new bootstrap.Modal(document.getElementById('reminderModal'));
                         reminderModal.show();
@@ -513,12 +502,12 @@
                 error: function(xhr, status, error) {
                     console.error('Failed to load reminder:', error);
                     console.error('Status:', status);
-                    
-                    // Sembunyikan loading
+
                     $('#reminderLoading').hide();
                 }
             });
         }
     </script>
 </body>
+
 </html>

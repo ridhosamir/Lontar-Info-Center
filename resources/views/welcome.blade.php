@@ -2,13 +2,11 @@
 
 @section('content')
 <!-- Konten halaman dengan informasi perusahaan -->
-<div class="container mt-4">
-    <h3 class="login-title">Application Corporate</h3>
-    
+<div class="container-fluid px-4">    
     <!-- Restructured layout: Carousel on left, Portal Cards on right -->
     <div class="row mt-4">
         <!-- Left side: Carousel -->
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="company-image-wrapper">
                 <div class="company-image-border">
                     <!-- Dynamic Carousel from Database -->
@@ -67,27 +65,28 @@
         </div>
         
         <!-- Right side: Portal Cards -->
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="portal-section">
-            <!-- Search Form with Red Clear Button -->
-<div class="row mb-4">
-    <div class="col-12">
-        <form action="{{ route('welcome') }}" method="GET">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control search-input" 
-                placeholder="Search portals..." value="{{ request('search') }}">
-                <button class="btn btn-primary search-btn" type="submit">
-                    <i class="fas fa-search"></i> Search
-                </button>
-                @if(request('search'))
-                    <a href="{{ route('welcome') }}" class="btn btn-danger clear-btn">
-                        <i class="fas fa-times"></i> Clear
-                    </a>
-                @endif
-            </div>
-        </form>
-    </div>
-</div>
+            
+                <!-- Search Form with Red Clear Button -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <form action="{{ route('welcome') }}" method="GET">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control search-input" 
+                                placeholder="Search portals..." value="{{ request('search') }}">
+                                <button class="btn btn-primary search-btn" type="submit">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                                @if(request('search'))
+                                    <a href="{{ route('welcome') }}" class="btn btn-danger clear-btn">
+                                        <i class="fas fa-times"></i> Clear
+                                    </a>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 @if($portalItems->isEmpty() && request('search'))
                     <div class="alert alert-info text-center">
@@ -194,7 +193,7 @@
 
 <!-- Copyright footer -->
 <div class="copyright-footer">
-    <div class="container">
+    <div class="container-fluid">
          <a href="#" class="copyright-link" data-bs-toggle="modal" data-bs-target="#loginModal">Copyright © 2025 PLN Indonesia Power Services. All Rights Reserved</a>
     </div>
 </div>
@@ -272,13 +271,35 @@
         padding: 20px 0;
     }
     
+    /* New create ticket button */
+    .create-ticket-btn {
+        display: inline-block;
+        background-color: #0d6efd; /* Bootstrap primary blue */
+        color: white !important;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        text-decoration: none !important;
+        font-size: 16px;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .create-ticket-btn:hover {
+        background-color: #0b5ed7;
+        color: white !important;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
     /* ENHANCED: Updated carousel container styling for more elegant look */
     .company-image-wrapper {
         position: relative;
-        padding: 15px;
+        padding: 20px;
         background-color: #0a0a5d;
         border-radius: 20px;
-        height: 90%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -298,7 +319,7 @@
     
     /* ENHANCED: Added poster container for better framing */
     .poster-container {
-        padding: 10px;
+        padding: 15px;
         position: relative;
         overflow: hidden;
     }
@@ -309,7 +330,7 @@
         height: auto;
         display: block;
         object-fit: contain;
-        max-height: 450px;
+        max-height: 800px; /* Increased height */
         border-radius: 8px;
         transition: transform 0.5s ease;
     }
@@ -355,8 +376,8 @@
     }
     
     .carousel-control-prev, .carousel-control-next {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
         top: 50%;
         transform: translateY(-50%);
         background-color: rgba(10, 10, 93, 0.7);
@@ -379,8 +400,8 @@
     }
     
     .carousel-control-prev-icon, .carousel-control-next-icon {
-        width: 20px;
-        height: 20px;
+        width: 25px;
+        height: 25px;
         filter: drop-shadow(0 0 2px rgba(248, 218, 41, 0.8));
     }
     
@@ -401,11 +422,11 @@
     .copyright-footer {
         border-top-right-radius: 15px; 
         border-top-left-radius: 15px; 
-        margin-left:17px;
         background-color: #0a0a5d; 
         padding: 15px 0;
         margin-top: 40px;
-        width: 98%;
+        width: 100%;
+        margin-left: 0;
     }
     
     .copyright-link {
@@ -436,7 +457,7 @@
     border: none;
     background-color: #0a0a5d;
     color: white;
-    height: 150px;
+    height: 160px; /* Increased height */
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
@@ -469,14 +490,14 @@
 .portal-title {
     font-family: 'Jura', sans-serif;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1.2rem; /* Increased font size */
     color: white;
     margin-bottom: 8px;
 }
 
 .portal-subtitle {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.8rem;
+    font-size: 0.9rem; /* Increased font size */
     line-height: 1.3;
     padding: 0 10px;
 }
@@ -537,7 +558,7 @@
         border-radius: 20px 0 0 20px;
         padding: 10px 20px;
         border: 2px solid #0a0a5d;
-        height: 45px;
+        height: 50px; /* Increased height */
     }
     
     .search-btn {
@@ -695,7 +716,7 @@
         }
         
         .portal-card {
-            min-height: 90px;
+            min-height: 100px;
         }
         
         .card-container {
@@ -703,11 +724,11 @@
         }
         
         .company-image {
-            max-height: 350px;
+            max-height: 450px; /* Increased from 350px */
         }
         
         .search-input, .search-btn, .clear-btn {
-            height: 40px;
+            height: 45px;
             font-size: 0.9rem;
         }
         
@@ -716,15 +737,19 @@
             height: 40px;
         }
         
+        .create-ticket-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
 
         .carousel-control-prev, .carousel-control-next {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
         }
         
         .carousel-control-prev-icon, .carousel-control-next-icon {
-            width: 15px;
-            height: 15px;
+            width: 18px;
+            height: 18px;
         }
         
         .carousel-indicators button {
@@ -757,14 +782,14 @@
                 $(this).css({
                     'max-width': '100%',
                     'height': 'auto',
-                    'max-height': '450px'
+                    'max-height': '800px' // Increased height for carousel images
                 });
             });
             
             // Make sure the carousel container adjusts to content
             $('.company-image-border').css({
                 'height': 'auto',
-                'min-height': '300px'
+                'min-height': '500px' // Increased from 300px
             });
         }
         

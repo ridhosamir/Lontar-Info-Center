@@ -520,6 +520,29 @@
             border: 1px solid #dee2e6;
         }
 
+        .btn-custom-danger {
+            background-color: #e53935;
+            color: white;
+            border-color: #e53935;
+        }
+
+        .btn-custom-danger:hover {
+            background-color: #c62828;
+            color: white;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: .25rem;
+            font-size: .875em;
+            color: #dc3545;
+        }
+
         .btn-custom-primary {
             background-color: #13097C;
             border-color: #13097C;
@@ -708,6 +731,10 @@
                     <button type="submit" class="btn btn-custom-primary">
                         <i class="fas fa-search"></i>
                     </button>
+                    <a href="{{ route('admins.portal-utama') }}" id="clear-search-btn" class="btn btn-custom-danger"
+                        style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </a>
                 </form>
             </div>
 
@@ -745,21 +772,23 @@
                     <h5 class="modal-title" id="createModalLabel">Create New Portal Utama</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="createForm" method="POST" action="{{ route('admins.portal-utama.store') }}">
+                <form id="createForm" method="POST" action="{{ route('admins.portal-utama.store') }}" novalidate>
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="create-nama" class="form-label">Portal Name</label>
-                            <input type="text" class="form-control" id="create-nama" name="nama_portal_user"
-                                required>
+                            <input type="text" class="form-control" id="create-nama" name="nama_portal_user">
+                            <div class="invalid-feedback" id="create-nama_portal_user-error"></div>
                         </div>
                         <div class="mb-3">
                             <label for="create-keterangan" class="form-label">Description</label>
                             <textarea class="form-control" id="create-keterangan" name="keterangan_user" rows="4"></textarea>
+                            <div class="invalid-feedback" id="create-keterangan_user-error"></div>
                         </div>
                         <div class="mb-3">
                             <label for="create-link" class="form-label">Link</label>
                             <input type="url" class="form-control" id="create-link" name="link">
+                            <div class="invalid-feedback" id="create-link-error"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -779,23 +808,25 @@
                     <h5 class="modal-title" id="editModalLabel">Edit Portal Utama</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="editForm" method="POST">
+                <form id="editForm" method="POST" novalidate>
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
                         <input type="hidden" id="edit-id" name="id">
                         <div class="mb-3">
                             <label for="edit-nama" class="form-label">Portal Name</label>
-                            <input type="text" class="form-control" id="edit-nama" name="nama_portal_user"
-                                required>
+                            <input type="text" class="form-control" id="edit-nama" name="nama_portal_user">
+                            <div class="invalid-feedback" id="edit-nama_portal_user-error"></div>
                         </div>
                         <div class="mb-3">
                             <label for="edit-keterangan" class="form-label">Description</label>
                             <textarea class="form-control" id="edit-keterangan" name="keterangan_user" rows="4"></textarea>
+                            <div class="invalid-feedback" id="edit-keterangan_user-error"></div>
                         </div>
                         <div class="mb-3">
                             <label for="edit-link" class="form-label">Link</label>
                             <input type="url" class="form-control" id="edit-link" name="link">
+                            <div class="invalid-feedback" id="edit-link-error"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -839,7 +870,6 @@
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            const searchInput = document.getElementById('search-input');
             const portalList = document.getElementById('portal-list');
             const editModal = new bootstrap.Modal(document.getElementById('editModal'));
             const createForm = document.getElementById('createForm');
@@ -852,6 +882,54 @@
             const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
             const popupOverlay = document.getElementById('popup-overlay');
             const createModal = new bootstrap.Modal(document.getElementById('createModal'));
+            const searchInput = document.querySelector('input[name="search"]');
+            const clearSearchBtn = document.getElementById('clear-search-btn');
+
+            if (searchInput && searchInput.value) {
+                clearSearchBtn.style.display = 'inline-block';
+            }
+
+            // Fungsi untuk membersihkan pesan error validasi
+            function clearValidationErrors(form) {
+                form.querySelectorAll('.is-invalid').forEach(element => {
+                    element.classList.remove('is-invalid');
+                });
+                form.querySelectorAll('.invalid-feedback').forEach(element => {
+                    element.textContent = '';
+                });
+            }
+
+            // Fungsi untuk menampilkan pesan error validasi
+            function displayValidationErrors(errors, form) {
+                for (const field in errors) {
+                    const input = form.querySelector(`[name="${field}"]`);
+                    const errorDiv = input ? input.nextElementSibling : null;
+
+                    if (input && errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                        input.classList.add('is-invalid');
+                        const serverMessage = errors[field][0];
+                        let customMessage = serverMessage;
+
+                        if (serverMessage.toLowerCase().includes('required')) {
+                            if (field === 'nama_portal_user') customMessage = 'Portal Name cannot be empty.';
+                            if (field === 'link') customMessage = 'Link cannot be empty.';
+                        } else if (serverMessage.toLowerCase().includes(
+                                'has already been taken')) {
+                            if (field === 'nama_portal_user') customMessage = 'Portal Name is already in use.';
+                        } else if (serverMessage.toLowerCase().includes(
+                                'must be a valid url')) {
+                            if (field === 'link') customMessage = 'Link must be a URL.';
+                        }
+
+                        errorDiv.textContent = customMessage;
+                    }
+                }
+            }
+
+            document.getElementById('createModal').addEventListener('hidden.bs.modal', () => clearValidationErrors(
+                createForm));
+            document.getElementById('editModal').addEventListener('hidden.bs.modal', () => clearValidationErrors(
+                editForm));
 
             // Sidebar toggle
             hamburgerBtn.addEventListener('click', function() {
@@ -906,16 +984,23 @@
             // Create form submission
             createForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                clearValidationErrors(createForm);
                 $.ajax({
                     url: createForm.action,
                     method: 'POST',
                     data: $(createForm).serialize(),
                     success: function(response) {
-                        showSuccessPopup('Portal successfully created!', 3000, true,
-                            true);
+                        showSuccessPopup('Portal successfully created!', 3000, true, true);
                     },
                     error: function(xhr) {
-                        alert('Error creating portal: ' + xhr.responseJSON.message);
+                        if (xhr.status === 422) {
+                            displayValidationErrors(xhr.responseJSON.errors, createForm);
+                        } else {
+                            alert(
+                                'Error creating portal. Please check the console for details.'
+                            );
+                            console.error(xhr);
+                        }
                     }
                 });
             });
@@ -923,6 +1008,7 @@
             // Edit form submission
             editForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                clearValidationErrors(editForm);
                 $.ajax({
                     url: editForm.action,
                     method: 'POST',
@@ -933,7 +1019,14 @@
                         editModal.hide();
                     },
                     error: function(xhr) {
-                        alert('Error updating portal: ' + xhr.responseJSON.message);
+                        if (xhr.status === 422) {
+                            displayValidationErrors(xhr.responseJSON.errors, editForm);
+                        } else {
+                            alert(
+                                'Error updating portal. Please check the console for details.'
+                            );
+                            console.error(xhr);
+                        }
                     }
                 });
             });
@@ -972,7 +1065,6 @@
                                     editModal.hide();
                                     deleteConfirmPopup.classList.remove('show');
                                     popupOverlay.classList.remove('show');
-
                                     showSuccessPopup('Portal successfully deleted!',
                                         2000, false, true);
                                 },
@@ -984,16 +1076,13 @@
                             });
                         };
                     };
-
                     editModal.show();
                 }
             });
 
             if (window.location.hash) {
                 var modalId = window.location.hash;
-
                 var targetModal = document.querySelector(modalId);
-
                 if (targetModal) {
                     var modal = new bootstrap.Modal(targetModal);
                     modal.show();
