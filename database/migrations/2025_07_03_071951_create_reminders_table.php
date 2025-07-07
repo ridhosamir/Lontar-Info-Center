@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('reminders', function (Blueprint $table) {
             $table->id('id_reminder');
-            $table->text('pesan');
+            $table->text('pesan')->nullable();
             $table->string('gambar')->nullable();
             $table->timestamps();
         });
