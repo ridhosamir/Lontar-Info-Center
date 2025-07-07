@@ -198,44 +198,73 @@
          <a href="#" class="copyright-link" data-bs-toggle="modal" data-bs-target="#loginModal">Copyright © 2025 PLN Indonesia Power Services. All Rights Reserved</a>
     </div>
 </div>
- <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="login-container">
-                        <!-- Left side - Image with Component label -->
-                        <div class="login-image" style="background-image: url('{{asset('storage/images/bg-login.jpeg') }}')">
-                            <div class="component-label">
-                                <span class="component-icon"></span> 
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="login-container">
+                    <!-- Left side - Image with Component label -->
+                    <div class="login-image" style="background-image: url('{{asset('storage/images/bg-login.jpeg') }}')">
+                        <div class="component-label">
+                            <span class="component-icon"></span> 
+                        </div>
+                    </div>
+                    
+                    <!-- Right side - Login form -->
+                    <div class="login-form">
+                        <!-- Logo and title -->
+                        <div class="login-logo">
+                            <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo">
+                            <div>
+                                <br>
                             </div>
                         </div>
                         
-                        <!-- Right side - Login form -->
-                        <div class="login-form">
-                            <!-- Logo and title -->
-                            <div class="login-logo">
-                                <img src="{{ asset('storage/images/ip-logo.png') }}" alt="PLN Logo">
-                                <div>
-                                    <br>
-                                </div>
+                        <h3 class="login-title">Login Admin</h3>
+                        
+                        <!-- Error messages handling (similar to Buns Ceramics style) -->
+                        @if($errors->any())
+                            <div class="alert alert-danger login-error-alert" role="alert">
+                                <i class="fas fa-exclamation-circle"></i> 
+                                @if($errors->has('login'))
+                                    {{ $errors->first('login') }}
+                                @elseif($errors->has('username') || $errors->has('password'))
+                                    @if($errors->has('username'))
+                                        {{ $errors->first('username') }}
+                                    @else
+                                        {{ $errors->first('password') }}
+                                    @endif
+                                @else
+                                    @foreach($errors->all() as $error)
+                                        {{ $error }}
+                                    @endforeach
+                                @endif
+                            </div>
+                        @endif
+                        
+                        <!-- Login form -->
+                        <form method="POST" action="{{ route('login') }}" style="width: 100%;" onsubmit="return validateLoginForm()">
+                            @csrf
+                            <div class="form-group mb-3">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ old('username') }}">
+                                <span id="usernameError" class="text-danger error-message mt-1 d-none">Username tidak boleh kosong</span>
                             </div>
                             
-                            <h3 class="login-title">Login Admin</h3>
+                            <div class="form-group mb-3">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                                <span id="passwordError" class="text-danger error-message mt-1 d-none">Password tidak boleh kosong</span>
+                            </div>
                             
-                            <!-- Login form -->
-                            <form method="POST" action="{{ route('login') }}" style="width: 100%;">
-                                @csrf
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                                <button type="submit" class="login-submit">Login</button>
-                            </form>
-                        </div>
+                            <button type="submit" class="login-submit">Login</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
     
 <style>
     /* Enhanced styling for wider carousel */
@@ -285,12 +314,10 @@
         transition: transform 0.5s ease;
     }
     
-    /* ENHANCED: Added hover effect for images */
     .poster-container:hover .company-image {
         transform: scale(1.02);
     }
     
-    /* ENHANCED: Carousel indicators styling */
     .carousel-indicators {
         margin-bottom: 0;
         bottom: 10px;
@@ -309,7 +336,6 @@
         background-color: #f8da29;
     }
     
-    /* Carousel styling */
     .carousel {
         width: 100%;
         border-radius: 15px;
@@ -328,7 +354,6 @@
         padding: 10px 0;
     }
     
-    /* ENHANCED: Improved control buttons styling */
     .carousel-control-prev, .carousel-control-next {
         width: 40px;
         height: 40px;
@@ -353,7 +378,6 @@
         background-color: rgba(10, 10, 93, 0.9);
     }
     
-    /* ENHANCED: Control icons styling */
     .carousel-control-prev-icon, .carousel-control-next-icon {
         width: 20px;
         height: 20px;
@@ -374,7 +398,6 @@
         margin-bottom: 20px;
     }
     
-    /* Styling untuk copyright footer */
     .copyright-footer {
         border-top-right-radius: 15px; 
         border-top-left-radius: 15px; 
@@ -400,12 +423,10 @@
         text-decoration: none !important;
     }
     
-    /* Portal Cards Styling */
     .portal-section {
         margin-bottom: 30px;
     }
     
-    /* Card container with fixed minimum height */
     .card-container {
         min-height: 370px;
     }
@@ -460,7 +481,7 @@
     padding: 0 10px;
 }
 
-/* Optional: Add yellow accent to card */
+
 .portal-card::before {
     content: '';
     position: absolute;
@@ -472,13 +493,13 @@
     border-bottom-left-radius: 100%;
 }
     
-    /* Fixed position for pagination */
+    
     .pagination-container {
         position: relative;
         height: 80px;
     }
     
-    /* Pagination styling - Updated to blue */
+
     .pagination {
         margin-top: 20px;
         margin-bottom: 10px;
@@ -511,7 +532,7 @@
         opacity: 0.7;
     }
     
-    /* Search Form Styling */
+ 
     .search-input {
         border-radius: 20px 0 0 20px;
         padding: 10px 20px;
@@ -520,22 +541,22 @@
     }
     
     .search-btn {
-        border-radius: 0 20px 20px 0;
+        border-radius: 0 25px 25px 0;
         background-color: #0a0a5d;
         color: white;
         border: none;
-        height: 45px;
+        height: 50px;
         padding: 0 20px;
     }
     
 
-/* Clear button styling - changed to red with white text */
+
 .clear-btn {
     border-radius: 20px;
     margin-left: 10px;
-    height: 45px;
+    height: 50px;
     padding: 0 15px;
-    background-color: #e53935; /* Red background */
+    background-color: #e53935; 
     color: white; 
     border: none;
     transition: all 0.3s ease;
@@ -550,7 +571,7 @@
     
 
     
-    /* No results message */
+
     .alert-info {
         background-color: #0a0a5d;
         color: white;
@@ -626,8 +647,47 @@
             font-family: 'Jura', sans-serif;
             cursor: pointer;
         }
+        
+        /* Login Error Alert Styling */
+        .login-error-alert {
+            width: 100%;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .login-error-alert i {
+            margin-right: 5px;
+            color: #e53935;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .error-message {
+            font-size: 14px;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            display: block;
+            color: #e53935;
+        }
+        
+        .d-none {
+            display: none;
+        }
     
-    /* Media query untuk layar kecil */
+
     @media (max-width: 767.98px) {
         .company-image-wrapper {
             margin-bottom: 20px;
@@ -656,7 +716,7 @@
             height: 40px;
         }
         
-        /* ENHANCED: Mobile adjustments for carousel */
+
         .carousel-control-prev, .carousel-control-next {
             width: 30px;
             height: 30px;
@@ -671,6 +731,11 @@
             width: 8px;
             height: 8px;
             margin: 0 3px;
+        }
+        
+        .login-error-alert {
+            font-size: 14px;
+            padding: 10px;
         }
     }
 </style>
@@ -720,7 +785,39 @@
         $(window).resize(function() {
             adjustCarouselImages();
         });
+        
+        // Auto-show login modal if there's a login error
+        @if($errors->any())
+            $('#loginModal').modal('show');
+        @endif
     });
+    
+    // Login validation function
+    function validateLoginForm() {
+        let isValid = true;
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const usernameError = document.getElementById('usernameError');
+        const passwordError = document.getElementById('passwordError');
+        
+        // Reset error messages
+        usernameError.classList.add('d-none');
+        passwordError.classList.add('d-none');
+        
+        // Validate username
+        if (!username) {
+            usernameError.classList.remove('d-none');
+            isValid = false;
+        }
+        
+        // Validate password
+        if (!password) {
+            passwordError.classList.remove('d-none');
+            isValid = false;
+        }
+        
+        return isValid;
+    }
 </script>
 @endpush
 @endsection
