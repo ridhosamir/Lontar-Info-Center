@@ -7,41 +7,65 @@ use Illuminate\Http\Request;
 
 class PortalUtamaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $portalUtamas = PortalUtama::all();
+        $search = $request->input('search');
+        $query = PortalUtama::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_portal_user', 'like', "%{$search}%")
+                    ->orWhere('keterangan_user', 'like', "%{$search}%")
+                    ->orWhere('link', 'like', "%{$search}%");
+            });
+        }
+
+        $portalUtamas = $query->paginate(8)->appends($request->except('page'));
+
         return view('admins.portal-utama', compact('portalUtamas'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nama_portal_user' => 'required',
-            'keterangan_user' => 'nullable',
+            'nama_portal_user' => 'required|string|max:255',
+            'keterangan_user' => 'nullable|string',
             'link' => 'nullable|url'
         ]);
 
-        PortalUtama::create($request->all());
-
-        return redirect()->route('admins.portal-utama')->with('success', 'Portal Utama created successfully.');
+        try {
+            PortalUtama::create($request->all());
+            return response()->json(['message' => 'Portal Utama created successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error creating portal: ' . $e->getMessage()], 500);
+        }
     }
 
-    public function update(Request $request, PortalUtama $portalUtama)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_portal_user' => 'required',
-            'keterangan_user' => 'nullable',
+            'nama_portal_user' => 'required|string|max:255',
+            'keterangan_user' => 'nullable|string',
             'link' => 'nullable|url'
         ]);
 
-        $portalUtama->update($request->all());
-
-        return redirect()->route('admins.portal-utama')->with('success', 'Portal Utama updated successfully.');
+        try {
+            $portalUtama = PortalUtama::findOrFail($id);
+            $portalUtama->update($request->all());
+            return response()->json(['message' => 'Portal Utama updated successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error updating portal: ' . $e->getMessage()], 500);
+        }
     }
 
-    public function destroy(PortalUtama $portalUtama)
+    public function destroy($id)
     {
-        $portalUtama->delete();
-        return redirect()->route('admins.portal-utama')->with('success', 'Portal Utama deleted successfully.');
+        try {
+            $portalUtama = PortalUtama::findOrFail($id);
+            $portalUtama->delete();
+            return response()->json(['message' => 'Portal Utama deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting portal: ' . $e->getMessage()], 500);
+        }
     }
 }

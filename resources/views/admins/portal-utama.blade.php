@@ -23,6 +23,29 @@
             font-family: 'Jura', sans-serif;
         }
 
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        body:hover::-webkit-scrollbar-thumb,
+        .main-content:hover::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+        }
+
+        body::-webkit-scrollbar-thumb:active,
+        .main-content::-webkit-scrollbar-thumb:active {
+            background: #a8a8a8;
+        }
+
         .top-container {
             position: relative;
             width: 94%;
@@ -175,8 +198,8 @@
         }
 
         .dashboard-title {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 20px;
             color: #13097C;
         }
@@ -275,24 +298,8 @@
             cursor: pointer;
         }
 
-        .search-container {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 200px;
-            padding: 10px;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
         .btn-create {
-            background-color: #13097C;
+            background-color: #28a745;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -302,7 +309,7 @@
         }
 
         .btn-create:hover {
-            background-color: #0f0766;
+            background-color: #218838;
         }
 
         .modal-content {
@@ -452,7 +459,7 @@
         }
 
         .popup-icon.alert {
-            color: #c62828;
+            color: #fbbf24;
         }
 
         .popup-message {
@@ -499,6 +506,29 @@
 
         .btn-popup-cancel:hover {
             background-color: #858383;
+        }
+
+        .page-item.active .page-link {
+            background-color: #13097C;
+            color: #fff;
+            border-color: #13097C;
+        }
+
+        .page-link {
+            color: #13097C;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-custom-primary {
+            background-color: #13097C;
+            border-color: #13097C;
+            color: #fff;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: #0f0766;
+            color: #fff;
         }
 
         @keyframes fadeIn {
@@ -637,7 +667,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ route('admins.portal-admin') }}" class="sidebar-link">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-user"></i>
                         <span>Manage Portal Admin</span>
                     </a>
                 </li>
@@ -663,14 +693,22 @@
         </div>
 
         <div class="main-content">
-            <h1 class="dashboard-title">Manage Portal Utama</h1>
+            <h1 class="dashboard-title text-center">Manage Portal Utama</h1>
 
             <!-- Search and Create Button -->
-            <div class="search-container">
-                <input type="text" id="search-input" class="search-input"
-                    placeholder="Search by name, description, or link...">
-                <button class="btn-create" data-bs-toggle="modal" data-bs-target="#createModal">Create New
-                    Portal</button>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn-create" data-bs-toggle="modal" data-bs-target="#createModal">
+                    + Create New Portal
+                </button>
+
+                <form action="{{ route('admins.portal-utama') }}" method="GET" class="d-flex gap-2"
+                    style="max-width: 500px;">
+                    <input type="text" name="search" class="form-control" placeholder="Cari portal..."
+                        value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-custom-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
             </div>
 
             <!-- Portal Utama List -->
@@ -690,6 +728,9 @@
                                     target="_blank">{{ $portal->link }}</a>
                             </div>
                         @endforeach
+                    </div>
+                    <div class="pagination-container mt-3">
+                        {{ $portalUtamas->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>
@@ -839,25 +880,6 @@
                 }
             });
 
-            // Search functionality
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const portalCards = portalList.getElementsByClassName('portal-card');
-
-                Array.from(portalCards).forEach(card => {
-                    const nama = card.dataset.nama.toLowerCase();
-                    const keterangan = card.dataset.keterangan.toLowerCase();
-                    const link = card.dataset.link.toLowerCase();
-
-                    if (nama.includes(searchTerm) || keterangan.includes(searchTerm) || link
-                        .includes(searchTerm)) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-
             // Popup close function
             window.closePopup = function(popupId) {
                 document.getElementById(popupId).classList.remove('show');
@@ -932,26 +954,34 @@
                     document.getElementById('edit-nama').value = nama;
                     document.getElementById('edit-keterangan').value = keterangan;
                     document.getElementById('edit-link').value = link;
-                    editForm.action = `{{ route('admins.portal-utama.update', ':id') }}`.replace(':id',
-                        id);
+                    editForm.action = `{{ url('admin/portal-utama') }}/${id}`;
                     visitBtn.onclick = () => window.open(link, '_blank');
                     deleteBtn.onclick = () => {
                         deleteConfirmPopup.classList.add('show');
                         popupOverlay.classList.add('show');
+
                         confirmDeleteBtn.onclick = () => {
-                            const deleteForm = document.createElement('form');
-                            deleteForm.method = 'POST';
-                            deleteForm.action = `{{ route('admins.portal-utama.destroy', ':id') }}`
-                                .replace(':id', id);
-                            deleteForm.innerHTML = `
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <input type="hidden" name="_method" value="DELETE">
-                            `;
-                            document.body.appendChild(deleteForm);
-                            deleteForm.submit();
-                            deleteConfirmPopup.classList.remove('show');
-                            popupOverlay.classList.remove('show');
-                            showSuccessPopup('Portal successfully deleted!', 3000, false, true);
+                            $.ajax({
+                                url: `{{ url('admin/portal-utama') }}/${id}`,
+                                type: 'POST',
+                                data: {
+                                    '_token': '{{ csrf_token() }}',
+                                    '_method': 'DELETE'
+                                },
+                                success: function(response) {
+                                    editModal.hide();
+                                    deleteConfirmPopup.classList.remove('show');
+                                    popupOverlay.classList.remove('show');
+
+                                    showSuccessPopup('Portal successfully deleted!',
+                                        2000, false, true);
+                                },
+                                error: function(xhr) {
+                                    alert('Error deleting portal. Please try again.');
+                                    deleteConfirmPopup.classList.remove('show');
+                                    popupOverlay.classList.remove('show');
+                                }
+                            });
                         };
                     };
 

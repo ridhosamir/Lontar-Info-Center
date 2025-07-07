@@ -610,7 +610,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ route('admins.portal-admin') }}" class="sidebar-link">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-user"></i>
                         <span>Manage Portal Admin</span>
                     </a>
                 </li>
@@ -641,8 +641,10 @@
             <!-- Welcome Card -->
             <div class="welcome-card">
                 <h2>Selamat Datang, Admin</h2>
-                <p>Kelola seluruh inventaris, data pengguna, dan produk dengan efisien dan terorganisir melalui
-                    dashboard yang telah dioptimalkan.</p>
+                <p>Kelola akses dan konten untuk <strong>Portal Admin</strong> dan <strong>Portal Utama</strong>, atur
+                    <strong>Reminder</strong>, serta publikasikan <strong>Poster</strong> terbaru secara terpusat dari
+                    satu tempat.
+                </p>
                 <p style="color: #f39c12;">* Sistem yang hebat dimulai dari pengelolaan yang rapi</p>
             </div>
 
@@ -650,7 +652,7 @@
             <div class="stats-container">
                 <div class="stat-card">
                     <div class="stat-icon bg-primary-soft">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-user"></i>
                     </div>
                     <div class="stat-value">{{ App\Models\PortalAdmin::count() }}</div>
                     <div class="stat-label">Total Portal Admin</div>
@@ -686,7 +688,7 @@
 
                         <a href="{{ route('admins.portal-admin') }}#createModal" class="quick-action-card">
                             <div class="quick-action-icon icon-portal-admin">
-                                <i class="fas fa-users"></i>
+                                <i class="fas fa-user"></i>
                             </div>
                             <div class="quick-action-title">Portal Admin</div>
                             <div class="quick-action-label">Manage admin portals</div>
