@@ -699,7 +699,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ route('admins.portal-admin') }}" class="sidebar-link">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-user"></i>
                         <span>Manage Portal Admin</span>
                     </a>
                 </li>

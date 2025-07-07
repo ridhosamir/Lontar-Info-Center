@@ -19,6 +19,29 @@
             font-family: 'Jura', sans-serif;
         }
 
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        body:hover::-webkit-scrollbar-thumb,
+        .main-content:hover::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+        }
+
+        body::-webkit-scrollbar-thumb:active,
+        .main-content::-webkit-scrollbar-thumb:active {
+            background: #a8a8a8;
+        }
+
         .top-container {
             position: relative;
             width: 94%;
@@ -171,8 +194,8 @@
         }
 
         .dashboard-title {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 20px;
             color: #13097C;
         }
@@ -518,7 +541,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ route('admins.portal-admin') }}" class="sidebar-link">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-user"></i>
                         <span>Manage Portal Admin</span>
                     </a>
                 </li>

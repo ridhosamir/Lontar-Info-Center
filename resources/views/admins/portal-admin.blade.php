@@ -194,8 +194,8 @@
         }
 
         .dashboard-title {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 20px;
             color: #13097C;
         }
@@ -654,7 +654,7 @@
                 </li>
                 <li class="sidebar-item active">
                     <a href="{{ route('admins.portal-admin') }}" class="sidebar-link">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-user"></i>
                         <span>Manage Portal Admin</span>
                     </a>
                 </li>
@@ -933,7 +933,7 @@
                     document.getElementById('edit-nama').value = nama;
                     document.getElementById('edit-keterangan').value = keterangan;
                     document.getElementById('edit-link').value = link;
-                    editForm.action = `{{ url('portal-admin') }}/${id}`;
+                    editForm.action = `{{ url('admin/portal-admin') }}/${id}`;
                     visitBtn.onclick = () => window.open(link, '_blank');
                     deleteBtn.onclick = () => {
                         deleteConfirmPopup.classList.add('show');
@@ -941,7 +941,7 @@
 
                         confirmDeleteBtn.onclick = () => {
                             $.ajax({
-                                url: `{{ url('portal-admin') }}/${id}`,
+                                url: `{{ url('admin/portal-admin') }}/${id}`,
                                 type: 'POST',
                                 data: {
                                     '_token': '{{ csrf_token() }}',
