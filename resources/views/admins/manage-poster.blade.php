@@ -745,7 +745,8 @@
                 <div class="card-body">
                     <div class="poster-list-container" id="poster-list">
                         @foreach ($posters as $poster)
-                            <div class="poster-card" data-image-url="{{ asset('images/posters/' . $poster->gambar) }}">
+                            <div class="poster-card" data-poster-id="{{ $poster->id_poster }}"
+                                data-image-url="{{ asset('images/posters/' . $poster->gambar) }}">
                                 <img src="{{ asset('images/posters/' . $poster->gambar) }}" alt="Poster Image">
                             </div>
                         @endforeach
@@ -758,7 +759,6 @@
         </div>
     </div>
 
-    <!-- Create Modal -->
     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -792,7 +792,6 @@
         </div>
     </div>
 
-    <!-- View Modal -->
     <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -801,13 +800,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img id="view-image" src="" alt="Poster Image" class="img-fluid">
+                    <img id="view-image" src="" alt="Poster Image" class="img-fluid mb-3"
+                        style="max-height: 60vh;">
+                    <input type="hidden" id="view-poster-id">
+                    <input type="file" id="edit-image-input" name="gambar" class="d-none" accept="image/*">
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100 d-flex justify-content-between">
+                        <div id="view-modal-initial-buttons">
+                            <button type="button" class="btn-select" id="edit-image-btn" style="width: 110px;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button type="button" class="btn-delete" id="delete-image-btn" style="width: 110px;">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                        <div id="view-modal-edit-buttons">
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn-save" id="save-changes-btn">Save Changes</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Delete Modal -->
+
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
@@ -818,7 +836,6 @@
                 <div class="modal-body">
                     <p>Select the posters you want to delete.</p>
                     <div id="delete-poster-grid">
-                        <!-- Posters will be loaded here by JS -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -836,13 +853,11 @@
         <div id="delete-ids-container"></div>
     </form>
 
-    <!-- Success Popup -->
     <div class="popup" id="success-popup">
         <i class="fas fa-check-circle popup-icon success"></i>
         <div class="popup-message" id="success-message"></div>
     </div>
 
-    <!-- Alert Popup -->
     <div class="popup" id="alert-popup">
         <i class="fas fa-exclamation-circle popup-icon alert"></i>
         <div class="popup-message" id="alert-message"></div>
@@ -851,7 +866,6 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Popup -->
     <div class="popup" id="delete-confirm-popup">
         <i class="fas fa-exclamation-circle popup-icon alert"></i>
         <div class="popup-message">Are you sure you want to delete the selected poster(s)?</div>
@@ -860,6 +874,17 @@
             <button class="btn-popup btn-popup-delete" id="final-delete-btn">Delete</button>
         </div>
     </div>
+
+    <div class="popup" id="delete-single-confirm-popup">
+        <i class="fas fa-exclamation-circle popup-icon alert"></i>
+        <div class="popup-message">Are you sure you want to delete this poster?</div>
+        <div class="popup-buttons">
+            <button class="btn-popup btn-popup-cancel"
+                onclick="closePopup('delete-single-confirm-popup')">Cancel</button>
+            <button class="btn-popup btn-popup-delete" id="final-single-delete-btn">Delete</button>
+        </div>
+    </div>
+
 
     <div class="popup-overlay" id="popup-overlay"></div>
 
@@ -953,12 +978,133 @@
                 createFileInput.files = dataTransfer.files;
             }
 
+            const viewImage = document.getElementById('view-image');
+            const viewPosterIdInput = document.getElementById('view-poster-id');
+            const editImageInput = document.getElementById('edit-image-input');
+            const editImageBtn = document.getElementById('edit-image-btn');
+            const deleteImageBtn = document.getElementById('delete-image-btn');
+            const saveChangesBtn = document.getElementById('save-changes-btn');
+            const finalSingleDeleteBtn = document.getElementById('final-single-delete-btn');
+            const initialButtons = document.getElementById('view-modal-initial-buttons');
+            const editButtons = document.getElementById('view-modal-edit-buttons');
+
+            let originalImageUrl = '';
+
+            function resetViewModalState() {
+                viewImage.src = originalImageUrl;
+                editImageInput.value = '';
+                initialButtons.style.display = 'block';
+                editButtons.style.display = 'none';
+            }
+
             document.querySelectorAll('.poster-card').forEach(card => {
                 card.addEventListener('click', function() {
-                    const imageUrl = this.dataset.imageUrl;
-                    document.getElementById('view-image').src = imageUrl;
+                    originalImageUrl = this.dataset.imageUrl;
+                    const posterId = this.dataset.posterId;
+                    viewPosterIdInput.value = posterId;
+                    resetViewModalState();
                     viewModal.show();
                 });
+            });
+
+            document.getElementById('viewModal').addEventListener('hidden.bs.modal', resetViewModalState);
+
+            editImageBtn.addEventListener('click', () => {
+                editImageInput.click();
+            });
+
+            editImageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        viewImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                    initialButtons.style.display = 'none';
+                    editButtons.style.display = 'block';
+                }
+            });
+
+            saveChangesBtn.addEventListener('click', async () => {
+                const posterId = viewPosterIdInput.value;
+                const file = editImageInput.files[0];
+                if (!file) {
+                    showAlertPopup('Please select a new image first.');
+                    return;
+                }
+
+                saveChangesBtn.disabled = true;
+                saveChangesBtn.innerHTML =
+                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+
+                const formData = new FormData();
+                formData.append('gambar', file);
+                formData.append('_method', 'PUT');
+
+                try {
+                    const response = await fetch(`/admin/poster/${posterId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        viewModal.hide();
+                        showSuccessPopup(result.success ||
+                            'Poster updated successfully.');
+                    } else {
+                        showAlertPopup(result.message || 'An error occurred.');
+                    }
+                } catch (error) {
+                    console.error('Update error:', error);
+                    showAlertPopup('An error occurred while updating the poster.');
+                } finally {
+                    saveChangesBtn.disabled = false;
+                    saveChangesBtn.innerHTML = 'Save Changes';
+                }
+            });
+
+            deleteImageBtn.addEventListener('click', () => {
+                showPopup('delete-single-confirm-popup');
+            });
+
+            finalSingleDeleteBtn.addEventListener('click', async () => {
+                const posterId = viewPosterIdInput.value;
+                finalSingleDeleteBtn.disabled = true;
+
+                try {
+                    const response = await fetch(`/admin/poster/${posterId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        }
+                    });
+
+                    const result = await response.json();
+                    closePopup('delete-single-confirm-popup');
+
+                    if (response.ok) {
+                        viewModal.hide();
+                        showSuccessPopup(result.success ||
+                            'Poster deleted successfully.');
+                    } else {
+                        showAlertPopup(result.message || 'An error occurred.');
+                    }
+
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    showAlertPopup('An error occurred while deleting the poster.');
+                } finally {
+                    finalSingleDeleteBtn.disabled = false;
+                }
             });
 
             const openDeleteModalBtn = document.getElementById('open-delete-modal-btn');

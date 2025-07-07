@@ -65,15 +65,19 @@ class PosterController extends Controller
         }
 
         $image = $request->file('gambar');
-        $imageName = time() . '.' . $image->extension();
+        $imageName = time() . '_' . $image->getClientOriginalName();
         $image->move(public_path('images/posters'), $imageName);
 
         $poster->update(['gambar' => $imageName]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => 'Poster updated successfully.']);
+        }
+
         return redirect()->route('admins.manage-poster')->with('success', 'Poster updated successfully.');
     }
 
-    public function destroy(Poster $poster)
+    public function destroy(Request $request, Poster $poster)
     {
         $imagePath = public_path('images/posters/' . $poster->gambar);
         if (File::exists($imagePath)) {
@@ -81,6 +85,10 @@ class PosterController extends Controller
         }
 
         $poster->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => 'Poster deleted successfully.']);
+        }
 
         return redirect()->route('admins.manage-poster')->with('success', 'Poster deleted successfully.');
     }
