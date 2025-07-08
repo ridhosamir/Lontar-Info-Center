@@ -78,7 +78,7 @@
             font-family: 'Jura', 'Helvetica', sans-serif;
             padding: 8px 10px;
             border-radius: 5px;
-            background-color: #13097C !important; 
+            background-color: #13097C !important;
             border: none;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: inline-block;
@@ -333,7 +333,7 @@
 
 <body>
     <div class="top-container">
-        
+
         <!-- Bendera di atas topbar -->
         <div class="flag-container">
             <div class="flag-blue"></div>
@@ -393,60 +393,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set up CSRF token for AJAX requests
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            console.log("DOM fully loaded");
-
-            // Inisialisasi modal security
-            var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
-
-            // Cek apakah halaman di-load melalui aksi refresh
-            const navigationEntries = performance.getEntriesByType("navigation");
-            if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
-                securityModal.show();
-            }
-
-            // Tambahkan event listener untuk modal security saat ditutup
-            document.getElementById('securityModal').addEventListener('hidden.bs.modal', function() {
-                console.log("Security modal closed, fetching reminder...");
-                fetchAndShowReminder();
-            });
-
-            fetchSecurityContent();
-        });
-
         function fetchSecurityContent() {
             console.log("Fetching security content...");
-
             $.ajax({
                 url: '/get-reminder',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     console.log("Security content response:", response);
-
                     $('#securityLoading').hide();
-
                     if (response.success) {
                         if (response.type === 'gambar') {
-                            // Tampilkan gambar security
                             $('#securityImage').attr('src', response.image_path);
                             $('#securityImageContainer').show();
                             $('#securityMessageContainer').hide();
                         } else if (response.type === 'pesan') {
-                            // Tampilkan pesan security
                             $('#securityMessageContainer').text(response.message);
                             $('#securityMessageContainer').show();
                             $('#securityImageContainer').hide();
                         }
                     } else {
-                        // Jika tidak ada data dari database, tampilkan pesan default
                         $('#securityMessageContainer').text(
                             'Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.'
                         );
@@ -455,8 +421,6 @@
                 },
                 error: function(xhr, status, error) {
                     console.error('Failed to load security content:', error);
-
-                    // Sembunyikan loading dan tampilkan pesan default
                     $('#securityLoading').hide();
                     $('#securityMessageContainer').text(
                         'Harap berhati-hati saat mengakses website ini; pastikan untuk melindungi informasi pribadi Anda, membaca kebijakan privasi dan syarat penggunaan, serta menghindari berbagi data sensitif, karena penggunaan yang tidak tepat dapat menimbulkan risiko.'
@@ -468,32 +432,25 @@
 
         function fetchAndShowReminder() {
             console.log("Fetching reminder...");
-
             $.ajax({
                 url: '/get-reminder',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     console.log("Reminder response:", response);
-
                     $('#reminderLoading').hide();
-
                     if (response.success) {
                         if (response.type === 'gambar') {
-                            // Tampilkan gambar
                             console.log("Showing image reminder:", response.image_path);
                             $('#reminderImage').attr('src', response.image_path);
                             $('#reminderImageContainer').show();
                             $('#reminderMessageContainer').hide();
                         } else if (response.type === 'pesan') {
-                            // Tampilkan pesan
                             console.log("Showing text reminder:", response.message);
                             $('#reminderMessage').text(response.message);
                             $('#reminderMessageContainer').show();
                             $('#reminderImageContainer').hide();
                         }
-
-                        // Tampilkan modal reminder
                         var reminderModal = new bootstrap.Modal(document.getElementById('reminderModal'));
                         reminderModal.show();
                     } else {
@@ -503,12 +460,42 @@
                 error: function(xhr, status, error) {
                     console.error('Failed to load reminder:', error);
                     console.error('Status:', status);
-
                     $('#reminderLoading').hide();
                 }
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup CSRF token
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            @if (!$errors->any())
+
+                console.log("Tidak ada error login, menjalankan logika security modal.");
+
+                var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
+
+                const navigationEntries = performance.getEntriesByType("navigation");
+                if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
+                    securityModal.show();
+                }
+
+                document.getElementById('securityModal').addEventListener('hidden.bs.modal', function() {
+                    console.log("Security modal closed, fetching reminder...");
+                    fetchAndShowReminder();
+                });
+
+                fetchSecurityContent();
+            @else
+                console.log("Terdeteksi error login, logika security modal diabaikan.");
+            @endif
+        });
     </script>
+    @stack('scripts')
 </body>
 
 </html>
