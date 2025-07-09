@@ -446,30 +446,68 @@ Tidak ada portal yang ditemukan untuk "{{ request('search') }}".
             margin-bottom: 20px;
         }
 
-        .copyright-footer {
-            border-top-right-radius: 15px;
+ .copyright-footer {
+    background-color: #0a0a5d;
+    padding: 15px 0;
+    margin-top: 40px;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+                border-top-right-radius: 15px;
             border-top-left-radius: 15px;
-            background-color: #0a0a5d;
-            padding: 15px 0;
-            margin-top: 40px;
-            width: 100%;
-            margin-left: 0;
-        }
+}
+.copyright-footer .container-fluid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.copyright-link {
+    color: white !important;
+    text-decoration: none !important;
+    font-size: 16px;
+    font-family: 'Jura', sans-serif;
+    transition: color 0.3s ease;
+    display: inline-block;
+    padding: 5px 10px;
+}
 
-        .copyright-link {
-            color: white !important;
-            text-decoration: none !important;
-            text-align: center;
-            margin: 0;
-            font-size: 18px;
-            font-family: 'Jura', sans-serif;
-            display: block;
-        }
+.copyright-link:hover {
+    color: #f8da29 !important;
+}
 
-        .copyright-link:hover {
-            color: #f8da29 !important;
-            text-decoration: none !important;
-        }
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .copyright-footer {
+        padding: 12px 0;
+    }
+    
+    .copyright-link {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .copyright-footer {
+        padding: 10px 0;
+        margin-top: 30px;
+    }
+    
+    .copyright-link {
+        font-size: 14px;
+        padding: 3px 6px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .copyright-footer {
+        padding: 8px 0;
+    }
+    
+    .copyright-link {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+}
 
         .portal-section {
             margin-bottom: 30px;
