@@ -477,19 +477,29 @@
 
                 console.log("Tidak ada error login, menjalankan logika security modal.");
 
-                var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
+                const hasVisited = sessionStorage.getItem('hasVisited');
+                const navigationType = performance.getEntriesByType("navigation")[0].type;
 
-                const navigationEntries = performance.getEntriesByType("navigation");
-                if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
+                if (navigationType === 'navigate' && !hasVisited) {
+                    console.log("Kunjungan baru terdeteksi. Menampilkan modal.");
+                    var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
+                    fetchSecurityContent();
                     securityModal.show();
+                    sessionStorage.setItem('hasVisited', 'true');
+                } else if (navigationType === 'reload') {
+                    console.log("Refresh manual terdeteksi. Menampilkan modal.");
+
+                    var securityModal = new bootstrap.Modal(document.getElementById('securityModal'));
+                    fetchSecurityContent();
+                    securityModal.show();
+                } else {
+                    console.log("Navigasi internal (pencarian, hapus filter, dll.), tidak menampilkan modal.");
                 }
 
                 document.getElementById('securityModal').addEventListener('hidden.bs.modal', function() {
                     console.log("Security modal closed, fetching reminder...");
                     fetchAndShowReminder();
                 });
-
-                fetchSecurityContent();
             @else
                 console.log("Terdeteksi error login, logika security modal diabaikan.");
             @endif
