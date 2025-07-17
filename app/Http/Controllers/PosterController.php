@@ -29,7 +29,7 @@ class PosterController extends Controller
     {
         $request->validate([
             'gambar' => 'required|array',
-            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -56,7 +56,7 @@ class PosterController extends Controller
     public function update(Request $request, Poster $poster)
     {
         $request->validate([
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
 
         $imagePath = public_path('images/posters/' . $poster->gambar);
